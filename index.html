@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitFrog</title>
     <link rel="stylesheet" href="css/styles.css">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <meta name="google-signin-redirect_uri" content="http://localhost:3000/callback">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">FitFrog</div>
             <div class="auth-buttons">
-                <button id="loginBtn" class="btn">Login</button>
-                <button id="signupBtn" class="btn">Sign Up</button>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <button id="signoutBtn" class="btn" onclick="signOut()" style="display: none;">Sign Out</button>
             </div>
         </nav>
     </header>
@@ -53,5 +56,52 @@
 
     <script src="js/script.js"></script>
     <script src="js/questionnaire.js"></script>
+    <script>
+        // Called when user signs in successfully
+        function onSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            console.log('User email: ' + profile.getEmail());
+            
+            // Hide Google Sign-In button and show Sign Out button
+            document.querySelector('.g-signin2').style.display = 'none';
+            document.getElementById('signoutBtn').style.display = 'block';
+            
+            // Store user data in localStorage
+            const userData = {
+                name: profile.getName(),
+                email: profile.getEmail(),
+                imageUrl: profile.getImageUrl()
+            };
+            localStorage.setItem('googleUserData', JSON.stringify(userData));
+            
+            // Show welcome message
+            alert('Welcome to FitFrog, ' + profile.getName() + '!');
+        }
+
+        function signOut() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(() => {
+                // Show Google Sign-In button and hide Sign Out button
+                document.querySelector('.g-signin2').style.display = 'block';
+                document.getElementById('signoutBtn').style.display = 'none';
+                
+                // Clear stored user data
+                localStorage.removeItem('googleUserData');
+                
+                alert('You have been signed out.');
+            });
+        }
+
+        // Check if user is already signed in when page loads
+        window.onload = function() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.then(() => {
+                if (auth2.isSignedIn.get()) {
+                    const googleUser = auth2.currentUser.get();
+                    onSignIn(googleUser);
+                }
+            });
+        };
+    </script>
 </body>
 </html> 

@@ -252,4 +252,20 @@ input:focus {
 .dashboard-btn:hover {
     background-color: #45a049 !important;
     opacity: 1;
+}
+
+/* Google Sign-In styles */
+.g-signin2 {
+    margin-right: 1rem;
+}
+
+#signoutBtn {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border: none !important;
+}
+
+#signoutBtn:hover {
+    background-color: #c82333 !important;
+    opacity: 1;
 } 

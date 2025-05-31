@@ -6,6 +6,27 @@ let globalUserData = {
     weight: null
 };
 
+// Load saved data if it exists
+function loadSavedData() {
+    try {
+        const savedData = localStorage.getItem('fitfrogData');
+        if (savedData) {
+            globalUserData = JSON.parse(savedData);
+        }
+    } catch (error) {
+        console.error('Error loading saved data:', error);
+    }
+}
+
+// Save data to localStorage
+function saveData() {
+    try {
+        localStorage.setItem('fitfrogData', JSON.stringify(globalUserData));
+    } catch (error) {
+        console.error('Error saving data:', error);
+    }
+}
+
 class Questionnaire {
     constructor() {
         this.userData = { ...globalUserData }; // Create a new copy of the data
@@ -56,6 +77,7 @@ class Questionnaire {
                        placeholder="Enter your ${question.type}"
                        min="${question.min}"
                        max="${question.max}"
+                       value="${this.userData[question.type] || ''}"
                        required>
                 <button class="submit-btn">Next</button>
             `;
@@ -114,6 +136,7 @@ class Questionnaire {
         } else {
             // Update global data when questionnaire is complete
             Object.assign(globalUserData, this.userData);
+            saveData(); // Save to localStorage
             this.showDashboard();
             this.addDashboardButton();
         }
@@ -203,6 +226,7 @@ class Questionnaire {
 
 // Initialize questionnaire when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+    loadSavedData(); // Load saved data first
     const questionnaire = new Questionnaire();
     questionnaire.showQuestion();
 }); 
