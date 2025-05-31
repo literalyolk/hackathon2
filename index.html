@@ -3,105 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; frame-src 'self' https: accounts.google.com;">
     <title>FitFrog</title>
     <link rel="stylesheet" href="css/styles.css">
-    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
-    <meta name="google-signin-redirect_uri" content="http://localhost:3000/callback">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">FitFrog</div>
-            <div class="auth-buttons">
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                <button id="signoutBtn" class="btn" onclick="signOut()" style="display: none;">Sign Out</button>
+            <div class="nav-buttons">
+                <button id="homeBtn" class="nav-btn">
+                    <span class="icon">🏠</span>
+                    <span class="text">Home</span>
+                </button>
             </div>
         </nav>
     </header>
 
     <main>
-        <section class="hero">
+        <div id="welcomeContent" class="welcome-content">
             <h1>Welcome to FitFrog</h1>
-            <p>Your fitness journey starts here</p>
-        </section>
+            <p>Your personal fitness journey starts here!</p>
+        </div>
+
+        <div id="actionGrid" class="action-grid">
+            <button id="dashboardBtn" class="action-btn">
+                <span class="icon">📊</span>
+                <span class="text">View Dashboard</span>
+            </button>
+            <button id="goalsBtn" class="action-btn">
+                <span class="icon">🎯</span>
+                <span class="text">Set Goals</span>
+            </button>
+            <button id="workoutBtn" class="action-btn">
+                <span class="icon">💪</span>
+                <span class="text">Start Workout</span>
+            </button>
+            <button id="leaderboardBtn" class="action-btn">
+                <span class="icon">🏆</span>
+                <span class="text">Leaderboard</span>
+            </button>
+        </div>
     </main>
 
-    <!-- Auth Modals -->
-    <div id="loginModal" class="modal">
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Login</h2>
-            <form id="loginForm">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button type="submit" class="btn">Login</button>
-            </form>
+            <h2>Your Fitness Profile</h2>
+            <div id="userData"></div>
         </div>
     </div>
 
-    <div id="signupModal" class="modal">
+    <!-- Goals Modal -->
+    <div id="goalsModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Sign Up</h2>
-            <form id="signupForm">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <input type="password" placeholder="Confirm Password" required>
-                <button type="submit" class="btn">Sign Up</button>
-            </form>
+            <h2>Set Your Fitness Goals</h2>
+            <div class="goals-form">
+                <div class="form-group">
+                    <label>Goal Type:</label>
+                    <select id="goalType">
+                        <option value="weight">Weight Management</option>
+                        <option value="strength">Strength Building</option>
+                        <option value="endurance">Endurance Training</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Weight (kg):</label>
+                    <input type="range" id="weightSlider" min="40" max="150" value="70">
+                    <span id="weightValue">70 kg</span>
+                </div>
+                <div class="form-group">
+                    <label>Weekly Workouts:</label>
+                    <input type="range" id="workoutsSlider" min="1" max="7" value="3">
+                    <span id="workoutsValue">3 days</span>
+                </div>
+                <button id="saveGoals" class="submit-btn">Save Goals</button>
+            </div>
         </div>
     </div>
 
-    <script src="js/script.js"></script>
-    <script src="js/questionnaire.js"></script>
     <script>
-        // Called when user signs in successfully
-        function onSignIn(googleUser) {
-            const profile = googleUser.getBasicProfile();
-            console.log('User email: ' + profile.getEmail());
+        // Check if user has completed questionnaire
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+            console.log('User data:', userData); // Debug log
             
-            // Hide Google Sign-In button and show Sign Out button
-            document.querySelector('.g-signin2').style.display = 'none';
-            document.getElementById('signoutBtn').style.display = 'block';
-            
-            // Store user data in localStorage
-            const userData = {
-                name: profile.getName(),
-                email: profile.getEmail(),
-                imageUrl: profile.getImageUrl()
-            };
-            localStorage.setItem('googleUserData', JSON.stringify(userData));
-            
-            // Show welcome message
-            alert('Welcome to FitFrog, ' + profile.getName() + '!');
-        }
+            // Only redirect to questionnaire if no user data exists
+            if (!userData || !userData.age || !userData.gender || !userData.height || !userData.weight) {
+                console.log('Redirecting to questionnaire...'); // Debug log
+                window.location.replace('questionnaire.html');
+                return;
+            }
 
-        function signOut() {
-            const auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(() => {
-                // Show Google Sign-In button and hide Sign Out button
-                document.querySelector('.g-signin2').style.display = 'block';
-                document.getElementById('signoutBtn').style.display = 'none';
-                
-                // Clear stored user data
-                localStorage.removeItem('googleUserData');
-                
-                alert('You have been signed out.');
+            // Initialize modals
+            const dashboardModal = document.getElementById('dashboardModal');
+            const goalsModal = document.getElementById('goalsModal');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            const goalsBtn = document.getElementById('goalsBtn');
+            const workoutBtn = document.getElementById('workoutBtn');
+            const leaderboardBtn = document.getElementById('leaderboardBtn');
+            const homeBtn = document.getElementById('homeBtn');
+
+            // Close buttons
+            document.querySelectorAll('.close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    dashboardModal.style.display = 'none';
+                    goalsModal.style.display = 'none';
+                });
             });
-        }
 
-        // Check if user is already signed in when page loads
-        window.onload = function() {
-            const auth2 = gapi.auth2.getAuthInstance();
-            auth2.then(() => {
-                if (auth2.isSignedIn.get()) {
-                    const googleUser = auth2.currentUser.get();
-                    onSignIn(googleUser);
+            // Dashboard button
+            dashboardBtn.addEventListener('click', () => {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                if (userData) {
+                    const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
+                    const bmiCategory = bmi < 18.5 ? 'Underweight' : 
+                                      bmi < 25 ? 'Normal weight' : 
+                                      bmi < 30 ? 'Overweight' : 'Obese';
+                    
+                    document.getElementById('userData').innerHTML = `
+                        <div class="data-group">
+                            <h3>Personal Information</h3>
+                            <p>Age Group: ${userData.age}</p>
+                            <p>Gender: ${userData.gender}</p>
+                            <p>Height: ${userData.height} cm</p>
+                            <p>Weight: ${userData.weight} kg</p>
+                        </div>
+                        <div class="data-group">
+                            <h3>BMI Analysis</h3>
+                            <p>Your BMI: ${bmi}</p>
+                            <p>Category: ${bmiCategory}</p>
+                        </div>
+                    `;
+                    dashboardModal.style.display = 'block';
                 }
             });
-        };
+
+            // Goals button
+            goalsBtn.addEventListener('click', () => {
+                const savedGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                if (savedGoals) {
+                    document.getElementById('goalType').value = savedGoals.type;
+                    document.getElementById('weightSlider').value = savedGoals.targetWeight;
+                    document.getElementById('weightValue').textContent = `${savedGoals.targetWeight} kg`;
+                    document.getElementById('workoutsSlider').value = savedGoals.weeklyWorkouts;
+                    document.getElementById('workoutsValue').textContent = `${savedGoals.weeklyWorkouts} days`;
+                }
+                goalsModal.style.display = 'block';
+            });
+
+            // Save goals
+            document.getElementById('saveGoals').addEventListener('click', () => {
+                const goals = {
+                    type: document.getElementById('goalType').value,
+                    targetWeight: parseInt(document.getElementById('weightSlider').value),
+                    weeklyWorkouts: parseInt(document.getElementById('workoutsSlider').value)
+                };
+                localStorage.setItem('fitfrogGoals', JSON.stringify(goals));
+                goalsModal.style.display = 'none';
+                alert('Goals saved successfully!');
+            });
+
+            // Update sliders
+            document.getElementById('weightSlider').addEventListener('input', (e) => {
+                document.getElementById('weightValue').textContent = `${e.target.value} kg`;
+            });
+
+            document.getElementById('workoutsSlider').addEventListener('input', (e) => {
+                document.getElementById('workoutsValue').textContent = `${e.target.value} days`;
+            });
+
+            // Workout button
+            workoutBtn.addEventListener('click', () => {
+                alert('Workout feature coming soon!');
+            });
+
+            // Leaderboard button
+            leaderboardBtn.addEventListener('click', () => {
+                alert('Leaderboard feature coming soon!');
+            });
+
+            // Home button
+            homeBtn.addEventListener('click', () => {
+                window.location.reload();
+            });
+        });
     </script>
 </body>
 </html> 

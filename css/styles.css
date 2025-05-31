@@ -1,21 +1,23 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 /* Reset and base styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: #f5f5f5;
-    color: #333;
-    line-height: 1.6;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
 }
 
 /* Header styles */
 header {
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 100%;
     top: 0;
@@ -25,16 +27,17 @@ header {
 nav {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    text-decoration: none;
 }
 
 .auth-buttons {
@@ -44,43 +47,56 @@ nav {
 
 /* Button styles */
 .btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-}
-
-#loginBtn {
-    background-color: transparent;
-    color: #333;
-    border: 1px solid #333;
-}
-
-#signupBtn {
-    background-color: #333;
+    background: #3498db;
     color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .btn:hover {
-    opacity: 0.9;
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background: #2ecc71;
+}
+
+.btn-secondary:hover {
+    background: #27ae60;
 }
 
 /* Main content */
 main {
-    margin-top: 80px;
-    padding: 2rem;
+    padding-top: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem 2rem;
 }
 
 .hero {
     text-align: center;
-    padding: 4rem 1rem;
+    padding: 2rem 0;
 }
 
 .hero h1 {
     font-size: 2.5rem;
+    color: #2c3e50;
     margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #34495e;
+    margin-bottom: 2rem;
 }
 
 /* Modal styles */
@@ -97,19 +113,26 @@ main {
 
 .modal-content {
     background-color: white;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 2rem;
-    border-radius: 8px;
-    max-width: 400px;
+    border-radius: 15px;
+    max-width: 600px;
     position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .close {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
-    font-size: 1.5rem;
+    right: 1.5rem;
+    top: 1.5rem;
+    font-size: 1.8rem;
+    color: #666;
     cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #333;
 }
 
 /* Form styles */
@@ -136,6 +159,10 @@ input:focus {
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
     }
     
     .modal-content {
@@ -193,52 +220,125 @@ input:focus {
 
 /* Dashboard styles */
 .dashboard {
-    max-width: 600px !important;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin: 2rem 0;
+.dashboard h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
 }
 
-.profile-section, .bmi-section {
-    background: #f8f8f8;
+/* Goals section styles */
+.goals-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 1rem;
+}
+
+.goals-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.goal-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.goal-option {
+    flex: 1;
     padding: 1.5rem;
-    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+    color: #2c3e50;
 }
 
-.profile-section h3, .bmi-section h3 {
+.goal-option:hover {
+    border-color: #3498db;
+    background: #f7f9fc;
+    transform: translateY(-2px);
+}
+
+.goal-option.selected {
+    border-color: #3498db;
+    background: #f7f9fc;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+/* Slider styles */
+.slider-container {
+    margin: 2rem 0;
+    padding: 0 1rem;
+}
+
+.slider-container label {
+    display: block;
     margin-bottom: 1rem;
-    color: #333;
-}
-
-.profile-section p, .bmi-section p {
-    margin: 0.5rem 0;
+    color: #2c3e50;
+    font-weight: 500;
     font-size: 1.1rem;
 }
 
-.close-dashboard {
+.slider {
     width: 100%;
-    padding: 1rem;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    height: 8px;
+    -webkit-appearance: none;
+    background: #e0e0e0;
+    border-radius: 4px;
+    outline: none;
+    margin: 1rem 0;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #3498db;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 1rem;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.close-dashboard:hover {
-    opacity: 0.9;
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
-    .dashboard-content {
-        grid-template-columns: 1fr;
-    }
+.slider-value {
+    text-align: center;
+    margin-top: 0.5rem;
+    color: #34495e;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+#saveGoals {
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
 }
 
 /* Dashboard button styles */
@@ -268,4 +368,245 @@ input:focus {
 #signoutBtn:hover {
     background-color: #c82333 !important;
     opacity: 1;
+}
+
+/* Sign out button styles */
+.signout-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signout-btn:hover {
+    background-color: #c82333;
+}
+
+/* Sign in prompt styles */
+.signin-prompt {
+    text-align: center;
+    padding: 4rem 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.signin-prompt h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.signin-prompt p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.main-signin-btn {
+    background-color: #4285f4;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-signin-btn:hover {
+    background-color: #357abd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.main-signin-btn:active {
+    background-color: #2b6cb0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide welcome content by default */
+#welcomeContent {
+    display: none;
+}
+
+/* Action Grid styles */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+.action-btn {
+    background: white;
+    border: none;
+    border-radius: 15px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+}
+
+.action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-icon {
+    font-size: 3rem;
+}
+
+.btn-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Specific button styles */
+#dashboardBtn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+#dashboardBtn .btn-text {
+    color: white;
+}
+
+#goalsBtn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+#goalsBtn .btn-text {
+    color: white;
+}
+
+#workoutBtn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+#workoutBtn .btn-text {
+    color: white;
+}
+
+#leaderboardBtn {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+}
+
+#leaderboardBtn .btn-text {
+    color: white;
+}
+
+/* Responsive design for action grid */
+@media (max-width: 768px) {
+    .action-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .action-btn {
+        min-height: 150px;
+        padding: 1.5rem;
+    }
+
+    .btn-icon {
+        font-size: 2.5rem;
+    }
+
+    .btn-text {
+        font-size: 1.1rem;
+    }
+}
+
+/* Navigation button styles */
+.nav-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+}
+
+.nav-btn .btn-icon {
+    font-size: 1.5rem;
+}
+
+.nav-btn .btn-text {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Dashboard modal styles */
+.dashboard {
+    max-width: 800px !important;
+    margin: 5% auto;
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.profile-section, .bmi-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.profile-section h3, .bmi-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.profile-section p, .bmi-section p {
+    margin: 0.8rem 0;
+    color: #34495e;
+    font-size: 1.1rem;
+}
+
+.profile-section strong, .bmi-section strong {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Responsive design for dashboard */
+@media (max-width: 768px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .dashboard {
+        margin: 10% 1rem;
+    }
 } 
