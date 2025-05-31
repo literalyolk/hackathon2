@@ -150,7 +150,7 @@
             { key: 'tenGoals', icon: '🥇', title: '10 Goals', desc: 'Complete 10 weekly goals', check: stats => stats.goalsCompleted >= 10 },
             { key: 'weightChange5', icon: '💪', title: '5kg Change', desc: 'Lose or gain 5kg', check: stats => Math.abs(stats.weightDiff) >= 5 },
             { key: 'thirtyDayStreak', icon: '3️⃣0️⃣', title: '30 Day Streak', desc: 'Use the app for 30 days', check: stats => stats.daysUsingApp >= 30 },
-            { key: 'hundredWorkouts', icon: '🔥', title: '100 Workouts', desc: 'Log 100 workouts', check: stats => stats.workoutsLogged >= 100 },
+            { key: 'fiftyKCalories', icon: '🔥', title: '50,000 Calories', desc: 'Burn 50,000 total calories', check: stats => (stats.totalCaloriesBurnt || 0) >= 50000 },
         ];
 
         function getStats() {
@@ -173,13 +173,16 @@
                 mouthType: 'Smile',
                 skinColor: 'Light',
             };
+            const burnLogs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
+            const totalCaloriesBurnt = burnLogs.reduce((sum, log) => sum + (log.calories || 0), 0);
             return {
                 ...userData,
                 goalsCompleted,
                 daysUsingApp,
                 workoutsLogged,
                 weightDiff,
-                avatarConfig
+                avatarConfig,
+                totalCaloriesBurnt
             };
         }
 
@@ -188,7 +191,26 @@
             const avatarDiv = document.getElementById('avatarContainer');
             const params = stats.avatarConfig;
             const query = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
-            avatarDiv.innerHTML = `<img src="https://avataaars.io/?${query}" alt="Avatar" style="width:140px;height:140px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0001;" />`;
+            // Shop-only overlays
+            const overlaySvgs = {
+                'FlowerCrown': 'https://cdn.jsdelivr.net/gh/literalyolk/fitfrog-assets/flower-crown.svg',
+                'Bandana': 'https://cdn.jsdelivr.net/gh/literalyolk/fitfrog-assets/bandana.svg',
+                'PartyHat': 'https://cdn.jsdelivr.net/gh/literalyolk/fitfrog-assets/party-hat.svg',
+                'StarGlasses': 'https://cdn.jsdelivr.net/gh/literalyolk/fitfrog-assets/star-glasses.svg'
+            };
+            let overlay = '';
+            if (overlaySvgs[params.accessoriesType]) {
+                overlay = `<img src="${overlaySvgs[params.accessoriesType]}" style="position:absolute;top:0;left:0;width:140px;height:140px;pointer-events:none;" />`;
+            }
+            if (overlaySvgs[params.topType]) {
+                overlay += `<img src="${overlaySvgs[params.topType]}" style="position:absolute;top:0;left:0;width:140px;height:140px;pointer-events:none;" />`;
+            }
+            avatarDiv.innerHTML = `
+                <div style="position:relative;width:140px;height:140px;display:inline-block;">
+                    <img src="https://avataaars.io/?${query}" alt="Avatar" style="width:140px;height:140px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0001;position:relative;z-index:1;" />
+                    ${overlay}
+                </div>
+            `;
         }
 
         function renderProfile() {
@@ -244,13 +266,17 @@
                 { value: 'ShortHairShortFlat', label: 'Short Flat' },
                 { value: 'LongHairStraight', label: 'Long Straight' },
                 { value: 'NoHair', label: 'No Hair' },
-                { value: 'Hat', label: 'Hat' }
+                { value: 'Hat', label: 'Hat' },
+                { value: 'PartyHat', label: 'Party Hat' }
             ],
             accessoriesType: [
                 { value: 'Blank', label: 'None' },
                 { value: 'Prescription01', label: 'Glasses' },
                 { value: 'Kurt', label: 'Sunglasses' },
-                { value: 'Round', label: 'Round Glasses' }
+                { value: 'Round', label: 'Round Glasses' },
+                { value: 'FlowerCrown', label: 'Flower Crown' },
+                { value: 'Bandana', label: 'Bandana' },
+                { value: 'StarGlasses', label: 'Star Glasses' }
             ],
             hairColor: [
                 { value: 'Brown', label: 'Brown' },
@@ -282,17 +308,27 @@
             }
         };
 
+        // Helper to get unlocked accessories (from shop and achievements)
+        function getUnlockedAccessories() {
+            return JSON.parse(localStorage.getItem('fitfrogUnlockedAccessories') || '[]');
+        }
+
         function renderAvatarControls() {
             const stats = getStats();
             const config = stats.avatarConfig;
             const controlsDiv = document.getElementById('avatarControls');
+            const unlockedFromShop = getUnlockedAccessories();
             controlsDiv.innerHTML = `
                 <form id="avatarForm">
                     <label>Hair Style:
                         <select name="topType">
                             ${avatarOptions.topType.map(opt => {
-                                let unlocked = true;
-                                if (avatarUnlocks.topType[opt.value]) unlocked = avatarUnlocks.topType[opt.value](stats);
+                                let unlocked = false;
+                                if (["PartyHat"].includes(opt.value)) {
+                                    unlocked = unlockedFromShop.includes(opt.value);
+                                }
+                                if (avatarUnlocks.topType[opt.value]) unlocked = unlocked || avatarUnlocks.topType[opt.value](stats);
+                                if (["ShortHairShortFlat","LongHairStraight","NoHair"].includes(opt.value)) unlocked = true;
                                 return `<option value="${opt.value}" ${config.topType === opt.value ? 'selected' : ''} ${unlocked ? '' : 'disabled'}>${unlocked ? '' : '🔒 '}${opt.label}</option>`;
                             }).join('')}
                         </select>
@@ -300,10 +336,28 @@
                     <label>Accessories:
                         <select name="accessoriesType">
                             ${avatarOptions.accessoriesType.map(opt => {
-                                let unlocked = true;
-                                if (avatarUnlocks.accessoriesType[opt.value]) unlocked = avatarUnlocks.accessoriesType[opt.value](stats);
+                                let unlocked = false;
+                                if (["FlowerCrown","Bandana","StarGlasses","Prescription01"].includes(opt.value)) {
+                                    unlocked = unlockedFromShop.includes(opt.value);
+                                }
+                                if (avatarUnlocks.accessoriesType[opt.value]) unlocked = unlocked || avatarUnlocks.accessoriesType[opt.value](stats);
+                                if (["Blank"].includes(opt.value)) unlocked = true;
                                 return `<option value="${opt.value}" ${config.accessoriesType === opt.value ? 'selected' : ''} ${unlocked ? '' : 'disabled'}>${unlocked ? '' : '🔒 '}${opt.label}</option>`;
                             }).join('')}
+                        </select>
+                    </label>
+                    <label>Bought Accessories:
+                        <select id="boughtAccessoriesDropdown">
+                            ${(() => {
+                                const bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+                                if (!bought.length) return '<option disabled>No bought accessories</option>';
+                                return bought.map(key => {
+                                    let label = key;
+                                    let found = avatarOptions.accessoriesType.find(a => a.value === key);
+                                    if (found) label = found.label;
+                                    return `<option value="${key}">${label}</option>`;
+                                }).join('');
+                            })()}
                         </select>
                     </label>
                     <label>Hair Color:
@@ -340,6 +394,37 @@
                 renderAvatar();
                 // Do not re-render controls to avoid closing the form
             };
+            // Add event listener for boughtAccessoriesDropdown
+            setTimeout(() => {
+                const bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+                const controlsDiv = document.getElementById('avatarControls');
+                let dropdownHtml = `<label>Bought Accessories:
+                    <select id="boughtAccessoriesDropdown">
+                        ${bought.length ? bought.map(key => {
+                            let label = key;
+                            let found = avatarOptions.accessoriesType.find(a => a.value === key);
+                            if (found) label = found.label;
+                            return `<option value="${key}">${label}</option>`;
+                        }).join('') : '<option disabled>No bought accessories</option>'}
+                    </select>
+                </label>`;
+                let existing = document.getElementById('boughtAccessoriesDropdown');
+                if (existing) existing.parentElement.outerHTML = dropdownHtml;
+                else controlsDiv.insertAdjacentHTML('beforeend', dropdownHtml);
+                // Add event listener
+                const boughtDropdown = document.getElementById('boughtAccessoriesDropdown');
+                if (boughtDropdown) {
+                    boughtDropdown.value = (getStats().avatarConfig || {}).accessoriesType || '';
+                    boughtDropdown.addEventListener('change', function() {
+                        const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                        const avatarConfig = userData.avatarConfig || {};
+                        avatarConfig.accessoriesType = this.value;
+                        userData.avatarConfig = avatarConfig;
+                        localStorage.setItem('fitfrogData', JSON.stringify(userData));
+                        renderAvatar();
+                    });
+                }
+            }, 0);
         }
 
         // Toggle avatar controls
@@ -354,8 +439,44 @@
             }
         };
 
+        function renderBoughtAccessoriesDropdown() {
+            const bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+            if (!bought.length) return;
+            const controlsDiv = document.getElementById('avatarControls');
+            let dropdownHtml = `<label>Bought Accessories:
+                <select id="boughtAccessoriesDropdown">
+                    ${bought.map(key => {
+                        // Find label from avatarOptions or shopAccessories
+                        let label = key;
+                        let found = (window.shopAccessories || []).find(acc => acc.key === key);
+                        if (!found && window.avatarOptions && window.avatarOptions.accessoriesType) {
+                            let opt = window.avatarOptions.accessoriesType.find(a => a.value === key);
+                            if (opt) label = opt.label;
+                        } else if (found) {
+                            label = found.label;
+                        }
+                        return `<option value="${key}">${label}</option>`;
+                    }).join('')}
+                </select>
+            </label>`;
+            // Insert or replace
+            let existing = document.getElementById('boughtAccessoriesDropdown');
+            if (existing) existing.parentElement.outerHTML = dropdownHtml;
+            else controlsDiv.insertAdjacentHTML('beforeend', dropdownHtml);
+            // Add event listener
+            document.getElementById('boughtAccessoriesDropdown').addEventListener('change', function() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                const avatarConfig = userData.avatarConfig || {};
+                avatarConfig.accessoriesType = this.value;
+                userData.avatarConfig = avatarConfig;
+                localStorage.setItem('fitfrogData', JSON.stringify(userData));
+                renderAvatar();
+            });
+        }
+
         renderAvatar();
         renderAvatarControls();
+        renderBoughtAccessoriesDropdown();
         renderProfile();
         renderAchievements();
     </script>

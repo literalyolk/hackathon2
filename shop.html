@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitFrog Shop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        #shopAccessoriesList {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin: 1.2rem 0;
+        }
+        .shop-accessory {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            box-shadow: 0 2px 8px #0001;
+        }
+        .shop-accessory.selected {
+            border: 2px solid #219150;
+            background: #eafaf3;
+        }
+        .shop-accessory-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px #0001;
+        }
+        .shop-accessory-info {
+            flex: 1;
+        }
+        .shop-accessory-btn {
+            background: #219150;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .shop-accessory-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <header style="background:#fff;box-shadow:0 2px 8px #0001;min-height:unset;height:48px;">
+        <nav style="display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:48px;">
+            <div class="logo" style="font-size:1.3rem;font-weight:700;color:#219150;">FitFrog Shop</div>
+            <div class="nav-buttons" style="display:flex;gap:0.7rem;align-items:center;">
+                <button id="homeBtn" class="nav-btn" style="background:none;border:none;font-size:1.6rem;padding:0 0.5rem;line-height:1;">🏠</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div style="margin:1.2rem 0;">
+            <div style="font-size:1.1rem;margin-bottom:0.7rem;">Balance: <span id="lilyPadBalance">0</span> 🪷</div>
+            <div id="shopMessage" style="color:#219150;font-weight:500;"></div>
+        </div>
+        <div id="shopAccessoriesList"></div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shopAccessories = [
+                { key: 'Wayfarers', label: 'Wayfarers', price: 120, type: 'accessoriesType' },
+                { key: 'Blank', label: 'Blank', price: 50, type: 'accessoriesType' },
+                { key: 'ShortHairShortFlat', label: 'Short Hair', price: 80, type: 'topType' },
+                { key: 'LongHairBigHair', label: 'Long Hair', price: 100, type: 'topType' },
+                { key: 'WinterHat1', label: 'Winter Hat', price: 150, type: 'topType' },
+                { key: 'WinterHat2', label: 'Winter Hat 2', price: 150, type: 'topType' },
+                { key: 'WinterHat3', label: 'Winter Hat 3', price: 150, type: 'topType' },
+                { key: 'WinterHat4', label: 'Winter Hat 4', price: 150, type: 'topType' },
+                { key: 'LongHairCurly', label: 'Curly Hair', price: 100, type: 'topType' },
+                { key: 'LongHairStraight', label: 'Straight Hair', price: 100, type: 'topType' },
+                { key: 'LongHairFrida', label: 'Frida Hair', price: 100, type: 'topType' },
+                { key: 'LongHairShavedSides', label: 'Shaved Sides', price: 100, type: 'topType' },
+                { key: 'LongHairMiaWallace', label: 'Mia Wallace Hair', price: 100, type: 'topType' },
+                { key: 'LongHairDreads', label: 'Dreads', price: 100, type: 'topType' },
+                { key: 'ShortHairDreads01', label: 'Short Dreads', price: 80, type: 'topType' },
+                { key: 'ShortHairDreads02', label: 'Short Dreads 2', price: 80, type: 'topType' },
+                { key: 'ShortHairFrizzle', label: 'Frizzle Hair', price: 80, type: 'topType' },
+                { key: 'ShortHairShaggyMullet', label: 'Shaggy Mullet', price: 80, type: 'topType' },
+                { key: 'ShortHairShortCurly', label: 'Short Curly Hair', price: 80, type: 'topType' },
+                { key: 'ShortHairShortWaved', label: 'Short Waved Hair', price: 80, type: 'topType' }
+            ];
+
+            function getUnlockedAccessories() {
+                return JSON.parse(localStorage.getItem('fitfrogUnlockedAccessories') || '[]');
+            }
+
+            function unlockAccessory(key) {
+                let unlocked = getUnlockedAccessories();
+                if (!unlocked.includes(key)) {
+                    unlocked.push(key);
+                    localStorage.setItem('fitfrogUnlockedAccessories', JSON.stringify(unlocked));
+                }
+            }
+
+            function updateLilyPadBalance() {
+                document.getElementById('lilyPadBalance').textContent = localStorage.getItem('fitfrogLilyPads') || '0';
+            }
+
+            function renderShopAccessories() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                const avatarConfig = userData.avatarConfig || {
+                    topType: 'ShortHairShortFlat',
+                    accessoriesType: 'Wayfarers',
+                    hairColor: 'Brown',
+                    facialHairType: 'Blank',
+                    clotheType: 'Hoodie',
+                    clotheColor: 'Blue03',
+                    eyeType: 'Default',
+                    eyebrowType: 'Default',
+                    mouthType: 'Smile',
+                    skinColor: 'Light',
+                };
+                let unlocked = getUnlockedAccessories();
+                const list = document.getElementById('shopAccessoriesList');
+                list.innerHTML = '';
+                shopAccessories.forEach(acc => {
+                    const isUnlocked = unlocked.includes(acc.key);
+                    const accDiv = document.createElement('div');
+                    accDiv.className = 'shop-accessory';
+                    let previewHtml = `<img src="https://avataaars.io/?${acc.type}=${acc.key}&topType=${acc.type==='topType'?acc.key:avatarConfig.topType}&accessoriesType=${acc.type==='accessoriesType'?acc.key:avatarConfig.accessoriesType}&hairColor=${avatarConfig.hairColor}&facialHairType=${avatarConfig.facialHairType}&clotheType=${avatarConfig.clotheType}&clotheColor=${avatarConfig.clotheColor}&eyeType=${avatarConfig.eyeType}&eyebrowType=${avatarConfig.eyebrowType}&mouthType=${avatarConfig.mouthType}&skinColor=${avatarConfig.skinColor}" style="width:60px;height:60px;border-radius:50%;background:#fff;" />`;
+                    accDiv.innerHTML = `
+                        <div class="shop-accessory-preview">${previewHtml}</div>
+                        <div class="shop-accessory-info">
+                            <div style="font-weight:600;">${acc.label}</div>
+                            <div style="font-size:0.98rem;color:#555;">${isUnlocked ? 'Unlocked' : acc.price + ' 🪷'}</div>
+                        </div>
+                        <button class="shop-accessory-btn" ${isUnlocked ? 'disabled' : ''}>${isUnlocked ? 'Owned' : 'Buy'}</button>
+                    `;
+                    accDiv.querySelector('.shop-accessory-btn').onclick = function() {
+                        let pads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
+                        if (pads >= acc.price) {
+                            pads -= acc.price;
+                            localStorage.setItem('fitfrogLilyPads', pads);
+                            unlockAccessory(acc.key);
+                            updateLilyPadBalance();
+                            renderShopAccessories();
+                            document.getElementById('shopMessage').textContent = `${acc.label} unlocked!`;
+                            // Sync with avatar
+                            avatarConfig[acc.type] = acc.key;
+                            userData.avatarConfig = avatarConfig;
+                            localStorage.setItem('fitfrogData', JSON.stringify(userData));
+                            // Refresh avatar preview
+                            const avatarPreview = document.getElementById('avatarPreview');
+                            if (avatarPreview) {
+                                avatarPreview.src = `https://avataaars.io/?topType=${avatarConfig.topType}&accessoriesType=${avatarConfig.accessoriesType}&hairColor=${avatarConfig.hairColor}&facialHairType=${avatarConfig.facialHairType}&clotheType=${avatarConfig.clotheType}&clotheColor=${avatarConfig.clotheColor}&eyeType=${avatarConfig.eyeType}&eyebrowType=${avatarConfig.eyebrowType}&mouthType=${avatarConfig.mouthType}&skinColor=${avatarConfig.skinColor}`;
+                            }
+                            let bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+                            if (!bought.includes(acc.key)) {
+                                bought.push(acc.key);
+                                localStorage.setItem('fitfrogBoughtAccessories', JSON.stringify(bought));
+                            }
+                        } else {
+                            document.getElementById('shopMessage').textContent = 'Not enough Lily Pads!';
+                        }
+                    };
+                    list.appendChild(accDiv);
+                });
+            }
+
+            updateLilyPadBalance();
+            renderShopAccessories();
+
+            document.getElementById('homeBtn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html> 
