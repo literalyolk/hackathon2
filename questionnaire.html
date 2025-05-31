@@ -196,6 +196,14 @@
                 this.currentStep = 0;
                 this.questions = [
                     {
+                        question: "What is your name?",
+                        type: "name",
+                        inputType: "text",
+                        minLength: 1,
+                        maxLength: 30,
+                        quote: "Welcome! Let's get started on your fitness journey."
+                    },
+                    {
                         question: "What is your age group?",
                         options: ["Under 18", "19-60", "60-90"],
                         type: "age",
@@ -272,8 +280,10 @@
                             <input type="${question.inputType}" 
                                    class="question-input" 
                                    placeholder="Enter your ${question.type}"
-                                   min="${question.min}"
-                                   max="${question.max}"
+                                   ${question.min ? `min=\"${question.min}\"` : ''}
+                                   ${question.max ? `max=\"${question.max}\"` : ''}
+                                   ${question.minLength ? `minlength=\"${question.minLength}\"` : ''}
+                                   ${question.maxLength ? `maxlength=\"${question.maxLength}\"` : ''}
                                    value="${this.userData[question.type] || ''}"
                                    required>
                             <button class="submit-btn">Next</button>
@@ -284,14 +294,22 @@
                     const submitBtn = optionsContainer.querySelector('.submit-btn');
 
                     submitBtn.addEventListener('click', () => {
-                        const value = parseFloat(input.value);
-                        if (value && value >= parseFloat(question.min) && value <= parseFloat(question.max)) {
+                        let value = input.value;
+                        if (question.inputType === 'number') value = parseFloat(value);
+                        if (
+                            (question.inputType === 'text' && value && value.length >= (question.minLength || 1) && value.length <= (question.maxLength || 30)) ||
+                            (question.inputType === 'number' && value && value >= parseFloat(question.min) && value <= parseFloat(question.max))
+                        ) {
                             this.userData[question.type] = value;
                             const quote = question.getQuote ? question.getQuote(value) : question.quote;
                             this.showQuote(quote);
                             setTimeout(() => this.nextQuestion(), 1500);
                         } else {
-                            alert(`Please enter a valid ${question.type} between ${question.min} and ${question.max}`);
+                            if (question.inputType === 'text') {
+                                alert(`Please enter a valid ${question.type} (1-30 characters).`);
+                            } else {
+                                alert(`Please enter a valid ${question.type} between ${question.min} and ${question.max}`);
+                            }
                         }
                     });
 

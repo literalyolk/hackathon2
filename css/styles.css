@@ -442,11 +442,11 @@ input:focus {
 /* Action Grid styles */
 .action-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    max-width: 800px;
-    margin: 3rem auto;
-    padding: 0 2rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 
 .action-btn {
@@ -470,14 +470,14 @@ input:focus {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.btn-icon {
-    font-size: 3rem;
+.action-btn .text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
 }
 
-.btn-text {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #2c3e50;
+.action-btn .icon {
+    font-size: 3.2rem;
 }
 
 /* Specific button styles */
@@ -517,8 +517,7 @@ input:focus {
 @media (max-width: 768px) {
     .action-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
+        gap: 1rem;
     }
 
     .action-btn {
@@ -526,12 +525,12 @@ input:focus {
         padding: 1.5rem;
     }
 
-    .btn-icon {
-        font-size: 2.5rem;
+    .action-btn .text {
+        font-size: 1.2rem;
     }
 
-    .btn-text {
-        font-size: 1.1rem;
+    .action-btn .icon {
+        font-size: 2.5rem;
     }
 }
 
@@ -609,4 +608,234 @@ input:focus {
     .dashboard {
         margin: 10% 1rem;
     }
+}
+
+.action-btn#viewGoalsBtn {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+}
+
+.goals-data {
+    padding: 1rem;
+}
+
+.goals-data .data-group {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.goals-data .data-group h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.goals-data .data-group p {
+    color: #666;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Update grid layout for 5 buttons */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+    .action-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* --- Goals Modal Two-Column Card Layout --- */
+.goals-modal-content {
+    max-width: 800px;
+    margin: 5% auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.goals-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.goals-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 0;
+}
+
+.goals-section .data-group {
+    margin-bottom: 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+}
+
+.goals-section h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.goals-section select,
+.goals-section input[type="range"] {
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.goals-section span {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.goals-section .submit-btn {
+    width: 100%;
+    margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+    .goals-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .goals-modal-content {
+        max-width: 95vw;
+    }
+}
+
+/* --- Dashboard Modal Consistency --- */
+.modal-content {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+.data-group {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.data-group:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Modern Slider Styles --- */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(90deg, #3498db 0%, #2ecc71 100%);
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s;
+    margin: 1rem 0 0.5rem 0;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+}
+input[type=range]:hover {
+    background: linear-gradient(90deg, #2980b9 0%, #27ae60 100%);
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border: 3px solid #3498db;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(52,152,219,0.15);
+    cursor: pointer;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+input[type=range]:hover::-webkit-slider-thumb,
+input[type=range]:focus::-webkit-slider-thumb {
+    border: 3px solid #2ecc71;
+    box-shadow: 0 6px 16px rgba(46,204,113,0.18);
+}
+input[type=range]::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border: 3px solid #3498db;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(52,152,219,0.15);
+    cursor: pointer;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+input[type=range]:hover::-moz-range-thumb,
+input[type=range]:focus::-moz-range-thumb {
+    border: 3px solid #2ecc71;
+    box-shadow: 0 6px 16px rgba(46,204,113,0.18);
+}
+input[type=range]::-ms-thumb {
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border: 3px solid #3498db;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(52,152,219,0.15);
+    cursor: pointer;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+input[type=range]:hover::-ms-thumb,
+input[type=range]:focus::-ms-thumb {
+    border: 3px solid #2ecc71;
+    box-shadow: 0 6px 16px rgba(46,204,113,0.18);
+}
+input[type=range]::-ms-fill-lower {
+    background: #3498db;
+    border-radius: 5px;
+}
+input[type=range]::-ms-fill-upper {
+    background: #2ecc71;
+    border-radius: 5px;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]:focus::-webkit-slider-thumb {
+    outline: 2px solid #2ecc71;
+}
+
+/* Value label styling */
+#weightValue, #workoutsValue {
+    display: inline-block;
+    margin-top: 0.2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #3498db;
+    background: #f0f8ff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(52,152,219,0.08);
+}
+
+/* Remove default styles for Firefox */
+input[type=range]::-moz-range-track {
+    background: linear-gradient(90deg, #3498db 0%, #2ecc71 100%);
+    height: 10px;
+    border-radius: 5px;
+}
+input[type=range]::-ms-tooltip {
+    display: none;
 } 

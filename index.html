@@ -23,7 +23,7 @@
 
     <main>
         <div id="welcomeContent" class="welcome-content">
-            <h1>Welcome to FitFrog</h1>
+            <h1 id="personalGreeting">Welcome to FitFrog</h1>
             <p>Your personal fitness journey starts here!</p>
         </div>
 
@@ -35,6 +35,18 @@
             <button id="goalsBtn" class="action-btn">
                 <span class="icon">🎯</span>
                 <span class="text">Set Goals</span>
+            </button>
+            <button id="viewGoalsBtn" class="action-btn">
+                <span class="icon">📋</span>
+                <span class="text">View Goals</span>
+            </button>
+            <button id="calorieIntakeBtn" class="action-btn">
+                <span class="icon">🍽️</span>
+                <span class="text">Calorie Intake</span>
+            </button>
+            <button id="calorieOuttakeBtn" class="action-btn">
+                <span class="icon">🔥</span>
+                <span class="text">Calorie Outtake</span>
             </button>
             <button id="workoutBtn" class="action-btn">
                 <span class="icon">💪</span>
@@ -58,29 +70,91 @@
 
     <!-- Goals Modal -->
     <div id="goalsModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content goals-modal-content">
             <span class="close">&times;</span>
             <h2>Set Your Fitness Goals</h2>
-            <div class="goals-form">
+            <div class="goals-content">
+                <div class="goals-section">
+                    <div class="data-group">
+                        <h3>Goal Type</h3>
+                        <select id="goalType">
+                            <option value="weight">Weight Management</option>
+                            <option value="strength">Strength Building</option>
+                            <option value="endurance">Endurance Training</option>
+                        </select>
+                    </div>
+                    <div class="data-group">
+                        <h3>Target Weight (kg)</h3>
+                        <input type="range" id="weightSlider" min="40" max="150" value="70">
+                        <span id="weightValue">70 kg</span>
+                    </div>
+                </div>
+                <div class="goals-section">
+                    <div class="data-group">
+                        <h3>Weekly Workouts</h3>
+                        <input type="range" id="workoutsSlider" min="1" max="7" value="3">
+                        <span id="workoutsValue">3 days</span>
+                    </div>
+                    <button id="saveGoals" class="submit-btn" style="margin-top:2rem;">Save Goals</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Goals Modal -->
+    <div id="viewGoalsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Fitness Goals</h2>
+            <div id="goalsData" class="goals-data">
+                <div class="data-group">
+                    <h3>Goal Type</h3>
+                    <p id="goalTypeDisplay">Not set</p>
+                </div>
+                <div class="data-group">
+                    <h3>Target Weight</h3>
+                    <p id="targetWeightDisplay">Not set</p>
+                </div>
+                <div class="data-group">
+                    <h3>Weekly Workouts</h3>
+                    <p id="weeklyWorkoutsDisplay">Not set</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calorie Intake Modal -->
+    <div id="calorieIntakeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Calorie Intake (Photo App)</h2>
+            <p>This feature will allow you to upload a photo of your meal and automatically track your calorie intake. (Coming soon!)</p>
+            <button class="submit-btn" onclick="alert('Photo upload and recognition coming soon!')">Upload Photo</button>
+        </div>
+    </div>
+
+    <!-- Calorie Outtake Modal -->
+    <div id="calorieOuttakeModal" class="modal">
+        <div class="modal-content calorie-outtake-modal-content">
+            <span class="close">&times;</span>
+            <h2>Log Your Run</h2>
+            <form id="runLogForm">
                 <div class="form-group">
-                    <label>Goal Type:</label>
-                    <select id="goalType">
-                        <option value="weight">Weight Management</option>
-                        <option value="strength">Strength Building</option>
-                        <option value="endurance">Endurance Training</option>
-                    </select>
+                    <label for="runDate">Date:</label>
+                    <input type="date" id="runDate" required>
                 </div>
                 <div class="form-group">
-                    <label>Target Weight (kg):</label>
-                    <input type="range" id="weightSlider" min="40" max="150" value="70">
-                    <span id="weightValue">70 kg</span>
+                    <label for="runDistance">Distance (km):</label>
+                    <input type="number" id="runDistance" min="0.1" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label>Weekly Workouts:</label>
-                    <input type="range" id="workoutsSlider" min="1" max="7" value="3">
-                    <span id="workoutsValue">3 days</span>
+                    <label for="runDuration">Duration (minutes):</label>
+                    <input type="number" id="runDuration" min="1" step="1" required>
                 </div>
-                <button id="saveGoals" class="submit-btn">Save Goals</button>
+                <button type="submit" class="submit-btn">Log Run</button>
+            </form>
+            <div id="calorieOuttakeSummary" class="calorie-outtake-summary">
+                <!-- Calorie summary will be shown here -->
             </div>
         </div>
     </div>
@@ -92,7 +166,7 @@
             console.log('User data:', userData); // Debug log
             
             // Only redirect to questionnaire if no user data exists
-            if (!userData || !userData.age || !userData.gender || !userData.height || !userData.weight) {
+            if (!userData || !userData.name || !userData.age || !userData.gender || !userData.height || !userData.weight) {
                 console.log('Redirecting to questionnaire...'); // Debug log
                 window.location.replace('questionnaire.html');
                 return;
@@ -101,8 +175,14 @@
             // Initialize modals
             const dashboardModal = document.getElementById('dashboardModal');
             const goalsModal = document.getElementById('goalsModal');
+            const viewGoalsModal = document.getElementById('viewGoalsModal');
+            const calorieIntakeModal = document.getElementById('calorieIntakeModal');
+            const calorieOuttakeModal = document.getElementById('calorieOuttakeModal');
             const dashboardBtn = document.getElementById('dashboardBtn');
             const goalsBtn = document.getElementById('goalsBtn');
+            const viewGoalsBtn = document.getElementById('viewGoalsBtn');
+            const calorieIntakeBtn = document.getElementById('calorieIntakeBtn');
+            const calorieOuttakeBtn = document.getElementById('calorieOuttakeBtn');
             const workoutBtn = document.getElementById('workoutBtn');
             const leaderboardBtn = document.getElementById('leaderboardBtn');
             const homeBtn = document.getElementById('homeBtn');
@@ -112,12 +192,58 @@
                 btn.addEventListener('click', () => {
                     dashboardModal.style.display = 'none';
                     goalsModal.style.display = 'none';
+                    viewGoalsModal.style.display = 'none';
+                    calorieIntakeModal.style.display = 'none';
+                    calorieOuttakeModal.style.display = 'none';
                 });
+            });
+
+            // View Goals button
+            viewGoalsBtn.addEventListener('click', () => {
+                const savedGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                if (savedGoals) {
+                    // Format goal type for display
+                    const goalTypeMap = {
+                        'weight': 'Weight Management',
+                        'strength': 'Strength Building',
+                        'endurance': 'Endurance Training'
+                    };
+                    
+                    document.getElementById('goalTypeDisplay').textContent = goalTypeMap[savedGoals.type] || savedGoals.type;
+                    document.getElementById('targetWeightDisplay').textContent = `${savedGoals.targetWeight} kg`;
+                    document.getElementById('weeklyWorkoutsDisplay').textContent = `${savedGoals.weeklyWorkouts} days per week`;
+                } else {
+                    document.getElementById('goalTypeDisplay').textContent = 'Not set';
+                    document.getElementById('targetWeightDisplay').textContent = 'Not set';
+                    document.getElementById('weeklyWorkoutsDisplay').textContent = 'Not set';
+                }
+                viewGoalsModal.style.display = 'block';
             });
 
             // Dashboard button
             dashboardBtn.addEventListener('click', () => {
                 const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                const userGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                let calorieStat = '';
+                let calorieValue = 0;
+                if (userGoals && userGoals.type === 'weight') {
+                    // Burn fat: show calories burnt (weekly)
+                    const logs = JSON.parse(localStorage.getItem('fitfrogRunLogs') || '[]');
+                    const now = new Date();
+                    const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                    calorieValue = logs.filter(log => {
+                        const logDate = new Date(log.date);
+                        return logDate >= weekAgo && logDate <= now;
+                    }).reduce((sum, log) => sum + log.calories, 0);
+                    calorieStat = `<div class='data-group'><h3>Calories Burnt (This Week)</h3><p>${calorieValue} kcal</p></div>`;
+                } else if (userGoals && userGoals.type === 'strength') {
+                    // Gain weight: show calories consumed (placeholder)
+                    // For now, just show a placeholder value
+                    calorieValue = parseInt(localStorage.getItem('fitfrogCaloriesConsumedWeek') || '0');
+                    calorieStat = `<div class='data-group'><h3>Calories Consumed (This Week)</h3><p>${calorieValue} kcal</p></div>`;
+                } else {
+                    calorieStat = '';
+                }
                 if (userData) {
                     const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
                     const bmiCategory = bmi < 18.5 ? 'Underweight' : 
@@ -137,6 +263,7 @@
                             <p>Your BMI: ${bmi}</p>
                             <p>Category: ${bmiCategory}</p>
                         </div>
+                        ${calorieStat}
                     `;
                     dashboardModal.style.display = 'block';
                 }
@@ -183,13 +310,85 @@
 
             // Leaderboard button
             leaderboardBtn.addEventListener('click', () => {
-                alert('Leaderboard feature coming soon!');
+                window.location.href = 'leaderboard.html';
             });
 
             // Home button
             homeBtn.addEventListener('click', () => {
                 window.location.reload();
             });
+
+            // Calorie Intake button
+            calorieIntakeBtn.addEventListener('click', () => {
+                calorieIntakeModal.style.display = 'block';
+            });
+
+            // Calorie Outtake button
+            calorieOuttakeBtn.addEventListener('click', () => {
+                updateCalorieOuttakeSummary();
+                calorieOuttakeModal.style.display = 'block';
+            });
+
+            // Calorie Outtake logging and summary
+            function getUserProfile() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                return userData || {};
+            }
+            function calculateCaloriesBurned(distance, duration, user) {
+                // More accurate: Calories = weight (kg) × distance (km) × 1.036
+                const weight = user.weight || 70;
+                const calories = Math.round(weight * distance * 1.036);
+                console.log(`[Run Log] Weight: ${weight}, Distance: ${distance}, Calories: ${calories}`);
+                return calories;
+            }
+            function getRunLogs() {
+                return JSON.parse(localStorage.getItem('fitfrogRunLogs') || '[]');
+            }
+            function saveRunLog(log) {
+                const logs = getRunLogs();
+                logs.push(log);
+                localStorage.setItem('fitfrogRunLogs', JSON.stringify(logs));
+            }
+            function updateCalorieOuttakeSummary() {
+                const logs = getRunLogs();
+                console.log('[Run Logs]', logs);
+                let daily = 0, monthly = 0, yearly = 0, allTime = 0;
+                const now = new Date();
+                logs.forEach(log => {
+                    const logDate = new Date(log.date);
+                    allTime += log.calories;
+                    if (logDate.toDateString() === now.toDateString()) daily += log.calories;
+                    if (logDate.getMonth() === now.getMonth() && logDate.getFullYear() === now.getFullYear()) monthly += log.calories;
+                    if (logDate.getFullYear() === now.getFullYear()) yearly += log.calories;
+                });
+                document.getElementById('calorieOuttakeSummary').innerHTML = `
+                    <h3>Calories Burned</h3>
+                    <div class="data-group"><strong>Today:</strong> ${daily} kcal</div>
+                    <div class="data-group"><strong>This Month:</strong> ${monthly} kcal</div>
+                    <div class="data-group"><strong>This Year:</strong> ${yearly} kcal</div>
+                    <div class="data-group"><strong>All Time:</strong> ${allTime} kcal</div>
+                `;
+            }
+            document.getElementById('runLogForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const user = getUserProfile();
+                const date = new Date(document.getElementById('runDate').value).toISOString();
+                const distance = parseFloat(document.getElementById('runDistance').value);
+                const duration = parseFloat(document.getElementById('runDuration').value);
+                const calories = calculateCaloriesBurned(distance, duration, user);
+                saveRunLog({ date, distance, duration, calories });
+                updateCalorieOuttakeSummary();
+                alert('Run logged!');
+                this.reset();
+            });
+
+            // Personalized greeting
+            const greeting = document.getElementById('personalGreeting');
+            if (userData && userData.name) {
+                greeting.textContent = `Hello, ${userData.name}! How would you like to get fit today?`;
+            } else {
+                greeting.textContent = 'Welcome to FitFrog';
+            }
         });
     </script>
 </body>
