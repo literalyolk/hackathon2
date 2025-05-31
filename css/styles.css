@@ -838,4 +838,23 @@ input[type=range]::-moz-range-track {
 }
 input[type=range]::-ms-tooltip {
     display: none;
-} 
+}
+
+const calorieOuttakeBtn = document.getElementById('calorieOuttakeBtn');
+const calorieOuttakeModal = document.getElementById('calorieOuttakeModal');
+calorieOuttakeBtn.addEventListener('click', () => {
+    updateCalorieOuttakeSummary();
+    calorieOuttakeModal.style.display = 'block';
+});
+
+<div id="calorieOuttakeModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <!-- ...form and summary... -->
+    </div>
+</div>
+
+<button id="calorieOuttakeBtn" class="action-btn">
+    <span class="icon">🔥</span>
+    <span class="text">Calorie Outtake</span>
+</button> 

@@ -104,7 +104,6 @@
             <p>Climb the ranks by burning or gaining more calories each week!</p>
         </div>
         <div id="burnFatSection" class="leaderboard-section"></div>
-        <div id="gainWeightSection" class="leaderboard-section"></div>
     </div>
     <script>
         // --- Rank Definitions ---
@@ -126,25 +125,99 @@
         function getUserGoals() {
             return JSON.parse(localStorage.getItem('fitfrogGoals') || '{}');
         }
+        function getLastDemotionCheck() {
+            return JSON.parse(localStorage.getItem('fitfrogLastDemotionCheck') || 'null');
+        }
+        function updateLastDemotionCheck() {
+            localStorage.setItem('fitfrogLastDemotionCheck', JSON.stringify(new Date().toISOString()));
+        }
+        function checkDailyDemotion() {
+            const lastCheck = getLastDemotionCheck();
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            
+            // If no last check or last check was before today
+            if (!lastCheck || new Date(lastCheck).setHours(0, 0, 0, 0) < now.getTime()) {
+                const userWeekly = getWeeklyCalories('weight');
+                const userRank = getUserRank(userWeekly);
+                const userGoals = getUserGoals();
+                
+                // Only check demotion if user's goal is weight management
+                if (userGoals && userGoals.type === 'weight') {
+                    // Get current rank
+                    const currentRank = localStorage.getItem('fitfrogCurrentRank') || 'Egg';
+                    
+                    // Check if user should be demoted
+                    if (userWeekly < 1000 && currentRank !== 'Egg') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Egg');
+                        alert('You have been demoted to Egg rank due to insufficient weekly activity.');
+                    } else if (userWeekly < 3000 && currentRank === 'Frog') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Tadpole');
+                        alert('You have been demoted to Tadpole rank due to insufficient weekly activity.');
+                    } else if (userWeekly < 6000 && currentRank === 'FitFrog') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Frog');
+                        alert('You have been demoted to Frog rank due to insufficient weekly activity.');
+                    }
+                }
+                
+                updateLastDemotionCheck();
+            }
+        }
         function getWeeklyCalories(type) {
             if (type === 'weight') {
                 // Calories burnt (outtake)
-                const logs = JSON.parse(localStorage.getItem('fitfrogRunLogs') || '[]');
+                const logs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
                 const user = getUserProfile();
                 const weight = user.weight || 70;
                 const now = new Date();
                 const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                
+                // Set time to start of day for accurate date comparison
+                now.setHours(0, 0, 0, 0);
+                weekAgo.setHours(0, 0, 0, 0);
+                
+                console.log('[Leaderboard] Calculating weekly calories:', {
+                    now: now.toISOString(),
+                    weekAgo: weekAgo.toISOString(),
+                    totalLogs: logs.length,
+                    userWeight: weight
+                });
+
                 let total = 0;
                 logs.forEach(log => {
                     const logDate = new Date(log.date);
+                    logDate.setHours(0, 0, 0, 0); // Set time to start of day for accurate comparison
+                    
                     if (logDate >= weekAgo && logDate <= now) {
-                        // Recalculate calories for consistency
-                        const calories = Math.round(weight * log.distance * 1.036);
-                        total += calories;
-                        console.log(`[Leaderboard] Weight: ${weight}, Distance: ${log.distance}, Calories: ${calories}, Date: ${log.date}`);
+                        total += log.calories;
+                        console.log(`[Leaderboard] Added to weekly total:`, {
+                            date: logDate.toISOString(),
+                            calories: log.calories,
+                            activity: log.activity,
+                            distance: log.distance,
+                            runningTotal: total,
+                            isInRange: true
+                        });
+                    } else {
+                        console.log(`[Leaderboard] Skipped log:`, {
+                            date: logDate.toISOString(),
+                            calories: log.calories,
+                            activity: log.activity,
+                            distance: log.distance,
+                            isInRange: false
+                        });
                     }
                 });
-                console.log('[Leaderboard Run Logs]', logs);
+                
+                console.log('[Leaderboard] Final weekly total:', {
+                    total,
+                    logsProcessed: logs.length,
+                    logsInRange: logs.filter(log => {
+                        const logDate = new Date(log.date);
+                        logDate.setHours(0, 0, 0, 0);
+                        return logDate >= weekAgo && logDate <= now;
+                    }).length
+                });
                 return total;
             } else {
                 // Calories gained (intake, placeholder)
@@ -159,6 +232,8 @@
                     break;
                 }
             }
+            // Update stored rank
+            localStorage.setItem('fitfrogCurrentRank', rank.name);
             return rank;
         }
         function generateBots(type, userWeekly, userName) {
@@ -214,9 +289,12 @@
         const user = getUserProfile();
         const goals = getUserGoals();
         const userName = user.name || 'You';
-        // Render both sections
+        
+        // Check for daily demotion
+        checkDailyDemotion();
+        
+        // Render only the calorie burnt leaderboard
         renderLeaderboard('burnFatSection', 'weight', userName);
-        renderLeaderboard('gainWeightSection', 'strength', userName);
     </script>
 </body>
 </html> 
