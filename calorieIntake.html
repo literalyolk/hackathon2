@@ -84,6 +84,12 @@
   </style>
 </head>
 <body>
+  <header style="background:#fff;box-shadow:0 2px 8px #0001;min-height:unset;height:48px;">
+    <nav style="display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:48px;">
+      <div class="logo" style="font-size:1.3rem;font-weight:700;color:#219150;">FitFrog</div>
+      <button id="homeBtn" class="nav-btn" style="background:none;border:none;font-size:1.6rem;padding:0 0.5rem;line-height:1;">🏠</button>
+    </nav>
+  </header>
   <h1>Meal Detection</h1>
   <p>Upload images of your meal and paste them below</p>
   <label for="imageInput" class="custom-file-upload">
@@ -873,6 +879,10 @@
 
     // Load the model when the page loads
     loadModel();
+
+    document.getElementById('homeBtn').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
   </script>
 </body>
 </html>

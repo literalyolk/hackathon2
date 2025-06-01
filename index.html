@@ -51,217 +51,6 @@
         background: #aaa;
         cursor: not-allowed;
     }
-    body {
-        background: linear-gradient(135deg, #e0f7fa 0%, #c8e6c9 100%);
-        font-family: 'Poppins', sans-serif;
-        min-height: 100vh;
-        margin: 0;
-    }
-    header {
-        background: #fff;
-        box-shadow: 0 2px 8px #0001;
-        min-height: unset;
-        height: 48px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    .logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #219150;
-        letter-spacing: 1px;
-    }
-    .nav-buttons .nav-btn {
-        background: none;
-        border: none;
-        font-size: 1.6rem;
-        padding: 0 0.5rem;
-        line-height: 1;
-        color: #219150;
-        transition: color 0.2s;
-    }
-    .nav-buttons .nav-btn:hover {
-        color: #176b3f;
-    }
-    main {
-        max-width: 600px;
-        margin: 2.5rem auto 0 auto;
-        padding: 0 1rem 2rem 1rem;
-    }
-    .personal-greeting {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #176b3f;
-        margin-bottom: 0.5rem;
-        text-align: center;
-    }
-    .widgets-row {
-        display: flex;
-        gap: 1.2rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        width: 100%;
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .widget {
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 2px 12px #0001;
-        padding: 1.1rem 1.5rem;
-        min-width: 160px;
-        text-align: center;
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: #219150;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0 0.5rem;
-    }
-    .widget.circle {
-        margin: 0 0.5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-    }
-    .circle-progress {
-        position: relative;
-        width: 90px;
-        height: 90px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 0.3rem;
-    }
-    .circle-progress svg {
-        transform: rotate(-90deg);
-    }
-    .circle-progress-value {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #176b3f;
-    }
-    .widget .widget-label {
-        margin-top: 0.2rem;
-    }
-    .widget .widget-value {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #176b3f;
-    }
-    .action-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        margin: 0 auto;
-        max-width: 400px;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 2px 12px #0001;
-        padding: 2rem 1.5rem;
-    }
-    .action-btn {
-        background: linear-gradient(135deg, #b2dfdb, #a5d6a7);
-        color: #176b3f;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        padding: 1.2rem 0.5rem;
-        box-shadow: 0 2px 8px #0001;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        transition: background 0.2s, color 0.2s, transform 0.1s;
-    }
-    .action-btn:hover {
-        background: linear-gradient(135deg, #a5d6a7, #b2dfdb);
-        color: #219150;
-        transform: translateY(-2px) scale(1.03);
-    }
-    @media (max-width: 600px) {
-        .action-grid {
-            grid-template-columns: 1fr;
-            padding: 1.2rem 0.5rem;
-        }
-        .widgets-row {
-            flex-direction: column;
-            gap: 0.8rem;
-            max-width: 100%;
-        }
-        .widget.circle, .widget {
-            margin: 0.5rem 0;
-        }
-    }
-    .side-progress-meter {
-        position: fixed;
-        top: 100px;
-        right: 32px;
-        width: 32px;
-        height: 220px;
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px #0001;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        z-index: 20;
-        padding: 0.7rem 0 0.7rem 0;
-    }
-    .side-progress-bar {
-        width: 12px;
-        height: 180px;
-        background: #e0e0e0;
-        border-radius: 8px;
-        position: relative;
-        margin-bottom: 0.5rem;
-        overflow: hidden;
-    }
-    .side-progress-bar-fill {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background: linear-gradient(180deg, #219150 0%, #a5d6a7 100%);
-        border-radius: 8px;
-        transition: height 0.4s;
-    }
-    .side-progress-label {
-        font-size: 0.95rem;
-        color: #176b3f;
-        font-weight: 600;
-        text-align: center;
-        margin-top: 0.2rem;
-    }
-    @media (max-width: 900px) {
-        .side-progress-meter {
-            position: sticky;
-            top: 80px;
-            right: 0;
-            left: unset;
-            margin-left: auto;
-            margin-right: 8px;
-        }
-    }
-    @media (max-width: 600px) {
-        .side-progress-meter {
-            display: none;
-        }
-    }
     </style>
 </head>
 <body>
@@ -277,28 +66,16 @@
     </header>
 
     <main>
-        <div class="personal-greeting" id="personalGreeting"></div>
-        <div class="widgets-row">
-            <div class="widget">
-                <div class="widget-label">🔥 Streak</div>
-                <div class="widget-value" id="mainStreakValue">0</div>
-            </div>
-            <div class="widget circle">
-                <div class="circle-progress">
-                    <svg width="90" height="90">
-                        <circle cx="45" cy="45" r="40" stroke="#e0e0e0" stroke-width="8" fill="none" />
-                        <circle id="goalProgressCircle" cx="45" cy="45" r="40" stroke="#219150" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
-                    </svg>
-                    <div class="circle-progress-value" id="goalProgressValue">0%</div>
-                </div>
-                <div class="widget-label">🎯 Calorie Goal</div>
-            </div>
+        <div id="personalizedGreeting" style="text-align: center; font-size: 1.5rem; margin-bottom: 1rem;"></div>
+
+        <div id="welcomeContent" class="welcome-content">
+            <h1 id="personalGreeting">Welcome to FitFrog</h1>
+            <p id="fitGreeting"></p>
         </div>
+
+        <div id="mainFitnessProfile"></div>
+
         <div id="actionGrid" class="action-grid">
-            <button id="dashboardBtn" class="action-btn">
-                <span class="icon">📊</span>
-                <span class="text">View Dashboard</span>
-            </button>
             <button id="goalsBtn" class="action-btn">
                 <span class="icon">🎯</span>
                 <span class="text">Set Goals</span>
@@ -325,22 +102,6 @@
             </button>
         </div>
     </main>
-
-    <div class="side-progress-meter" id="sideProgressMeter">
-        <div class="side-progress-bar">
-            <div class="side-progress-bar-fill" id="sideProgressBarFill" style="height:0%"></div>
-        </div>
-        <div class="side-progress-label" id="sideProgressLabel">0%</div>
-    </div>
-
-    <!-- Dashboard Modal -->
-    <div id="dashboardModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Your Fitness Profile</h2>
-            <div id="userData"></div>
-        </div>
-    </div>
 
     <!-- Goals Modal -->
     <div id="goalsModal" class="modal">
@@ -488,7 +249,6 @@
             }
 
             // Initialize modals
-            const dashboardModal = document.getElementById('dashboardModal');
             const goalsModal = document.getElementById('goalsModal');
             const viewGoalsModal = document.getElementById('viewGoalsModal');
             const calorieIntakeModal = document.getElementById('calorieIntakeModal');
@@ -510,7 +270,6 @@
             // Close buttons
             document.querySelectorAll('.close').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    dashboardModal.style.display = 'none';
                     goalsModal.style.display = 'none';
                     viewGoalsModal.style.display = 'none';
                     calorieIntakeModal.style.display = 'none';
@@ -532,122 +291,6 @@
                     document.getElementById('weeklyWorkoutsDisplay').textContent = 'Not set';
                 }
                 viewGoalsModal.style.display = 'block';
-            });
-
-            // Dashboard button
-            dashboardBtn.addEventListener('click', () => {
-                // Close all other modals first
-                goalsModal.style.display = 'none';
-                viewGoalsModal.style.display = 'none';
-                calorieIntakeModal.style.display = 'none';
-                calorieBurntModal.style.display = 'none';
-                profileModal.style.display = 'none';
-                goalVideoModal && (goalVideoModal.style.display = 'none');
-                mealSuggestionsModal.style.display = 'none';
-                // Show dashboard modal
-                dashboardModal.style.display = 'block';
-                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
-                const userGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
-                const goalsList = JSON.parse(localStorage.getItem('fitfrogGoalsList') || '[]');
-                let calorieStat = '';
-                let calorieValue = 0;
-                // Lily Pad balance
-                let lilyPads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
-                calorieStat += `<div class='data-group'><h3>Lily Pads</h3><p>${lilyPads} 🪷</p></div>`;
-                // Show calories burnt (weekly)
-                const logs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
-                const now = new Date();
-                const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-                calorieValue = logs.filter(log => {
-                    const logDate = new Date(log.date);
-                    return logDate >= weekAgo && logDate <= now;
-                }).reduce((sum, log) => sum + log.calories, 0);
-                let goalCompleted = false;
-                let goalsCompleted = parseInt(localStorage.getItem('fitfrogGoalsCompleted') || '0');
-                if (userGoals && userGoals.calorieGoal && calorieValue >= userGoals.calorieGoal) {
-                    goalCompleted = true;
-                }
-                // --- Goal Progress Widget ---
-                let widget = `<div style='background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px #0001;padding:1.2rem 1rem;margin-bottom:1.5rem;'>`;
-                widget += `<div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>🎯 Goal Progress</div>`;
-                if (goalsList.length > 0) {
-                    goalsList.forEach(g => {
-                        const percent = Math.min(100, Math.round(100 * (g.caloriesLogged || 0) / g.calorieGoal));
-                        widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>${g.name || 'Goal'}: <span style='color:#219150;'>${g.caloriesLogged || 0} / ${g.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
-                    });
-                } else if (userGoals && userGoals.calorieGoal) {
-                    const percent = Math.min(100, Math.round(100 * (userGoals.caloriesLogged || 0) / userGoals.calorieGoal));
-                    widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>Main Goal: <span style='color:#219150;'>${userGoals.caloriesLogged || 0} / ${userGoals.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
-                } else {
-                    widget += `<div>No goals set.</div>`;
-                }
-                widget += `<div style='margin-top:1.2rem;font-weight:500;'>🏆 Goals Completed: <span style='color:#219150;'>${goalsCompleted}</span></div>`;
-                // Day streak calculation
-                let streak = 0;
-                let streakFreeze = parseInt(localStorage.getItem('fitfrogStreakFreeze') || '0');
-                if (logs.length > 0) {
-                    // Get unique days with logs
-                    const days = logs.map(log => (new Date(log.date)).toDateString());
-                    const uniqueDays = Array.from(new Set(days)).sort((a, b) => new Date(b) - new Date(a));
-                    // Count consecutive days from today backwards
-                    let d = new Date();
-                    for (let i = 0; i < uniqueDays.length; i++) {
-                        if (new Date(uniqueDays[i]).toDateString() === d.toDateString()) {
-                            streak++;
-                            d.setDate(d.getDate() - 1);
-                        } else if (streakFreeze > 0) {
-                            streakFreeze--;
-                            d.setDate(d.getDate() - 1);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🔥 Day Streak: <span style='color:#e67e22;'>${streak}</span></div>`;
-                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🪷 Lily Pads: <span style='color:#219150;'>${lilyPads}</span></div>`;
-                widget += `</div>`;
-                calorieStat = widget;
-                // --- End Goal Progress Widget ---
-                if (userData) {
-                    const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
-                    const bmiCategory = bmi < 18.5 ? 'Underweight' : 
-                                      bmi < 25 ? 'Normal weight' : 
-                                      bmi < 30 ? 'Overweight' : 'Obese';
-                    // Weight lost/gained
-                    let initialWeight = userData.initialWeight || userData.weight;
-                    let weightDiff = userData.weight - initialWeight;
-                    let weightChange = '';
-                    if (weightDiff !== 0) {
-                        weightChange = `<div class='data-group'><h3>Weight ${weightDiff < 0 ? 'Lost' : 'Gained'}</h3><p>${Math.abs(weightDiff)} kg</p></div>`;
-                    }
-                    document.getElementById('userData').innerHTML = `
-                        <div class="data-group">
-                            <h3>Personal Information</h3>
-                            <p>Age Group: ${userData.age}</p>
-                            <p>Gender: ${userData.gender}</p>
-                            <p>Height: ${userData.height} cm</p>
-                            <p>Weight: <span id='currentWeight'>${userData.weight} kg</span> <button id='updateWeightBtn' style='margin-left:1rem;'>Update</button></p>
-                        </div>
-                        <div class="data-group">
-                            <h3>BMI Analysis</h3>
-                            <p>Your BMI: ${bmi}</p>
-                            <p>Category: ${bmiCategory}</p>
-                        </div>
-                        ${weightChange}
-                        ${calorieStat}
-                    `;
-                    // Add update weight logic
-                    document.getElementById('updateWeightBtn').onclick = function() {
-                        const newWeight = prompt('Enter your new weight (kg):', userData.weight);
-                        if (newWeight && !isNaN(newWeight)) {
-                            let updated = { ...userData, weight: parseFloat(newWeight) };
-                            if (!userData.initialWeight) updated.initialWeight = userData.weight;
-                            localStorage.setItem('fitfrogData', JSON.stringify(updated));
-                            document.getElementById('currentWeight').textContent = `${updated.weight} kg`;
-                            alert('Weight updated!');
-                        }
-                    };
-                }
             });
 
             // Goals button
@@ -1012,49 +655,10 @@
 
             // Personalized greeting
             if (userData && userData.name) {
-                document.getElementById('personalGreeting').textContent = `Hi, ${userData.name}! How are you going to get fit today?`;
+                document.getElementById('fitGreeting').textContent = `Hi ${userData.name}, how will you get fit today?`;
             } else {
-                document.getElementById('personalGreeting').textContent = 'Welcome to FitFrog!';
+                document.getElementById('fitGreeting').textContent = '';
             }
-
-            // Calculate streak and calorie goal for widgets
-            const logs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
-            let streak = 0;
-            let caloriesBurnt = 0;
-            if (logs.length > 0) {
-                const days = logs.map(log => (new Date(log.date)).toDateString());
-                const uniqueDays = Array.from(new Set(days)).sort((a, b) => new Date(b) - new Date(a));
-                let d = new Date();
-                for (let i = 0; i < uniqueDays.length; i++) {
-                    if (new Date(uniqueDays[i]).toDateString() === d.toDateString()) {
-                        streak++;
-                        d.setDate(d.getDate() - 1);
-                    } else {
-                        break;
-                    }
-                }
-                // Calculate calories burnt this week
-                const now = new Date();
-                const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-                caloriesBurnt = logs.filter(log => {
-                    const logDate = new Date(log.date);
-                    return logDate >= weekAgo && logDate <= now;
-                }).reduce((sum, log) => sum + log.calories, 0);
-            }
-            document.getElementById('mainStreakValue').textContent = streak;
-            const userGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
-            const calorieGoal = userGoals && userGoals.calorieGoal ? userGoals.calorieGoal : 0;
-            // Update circle progress
-            const percent = calorieGoal ? Math.min(100, Math.round(100 * caloriesBurnt / calorieGoal)) : 0;
-            const circle = document.getElementById('goalProgressCircle');
-            const value = document.getElementById('goalProgressValue');
-            circle.setAttribute('stroke-dashoffset', 251.2 - (251.2 * percent / 100));
-            value.textContent = percent + '%';
-            document.getElementById('mainCalorieGoalValue').textContent = calorieGoal + ' kcal';
-
-            // Update side progress meter
-            document.getElementById('sideProgressBarFill').style.height = percent + '%';
-            document.getElementById('sideProgressLabel').textContent = percent + '%';
 
             // Achievement definitions (should match profile.html)
             const achievementsList = [
@@ -1223,6 +827,144 @@ For each meal, include:
                 const data = await response.json();
                 return data.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data);
             }
+
+            function updateTotalCalories() {
+                const totalCaloriesDiv = document.getElementById('totalCalories');
+                totalCaloriesDiv.textContent = `Total Calories: ${Math.round(totalCalories)} kcal`;
+                // Store in localStorage for dashboard
+                localStorage.setItem('fitfrogTotalCaloriesIntake', Math.round(totalCalories));
+            }
+
+            function renderMainFitnessProfile() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                const userGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                const goalsList = JSON.parse(localStorage.getItem('fitfrogGoalsList') || '[]');
+                let calorieStat = '';
+                let calorieValue = 0;
+                // Lily Pad balance
+                let lilyPads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
+                calorieStat += `<div class='data-group'><h3>Lily Pads</h3><p>${lilyPads} 🪷</p></div>`;
+                // Show calories burnt (weekly)
+                const calorieLogs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
+                const currentDate = new Date();
+                const weekStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 6);
+                calorieValue = calorieLogs.filter(log => {
+                    const logDate = new Date(log.date);
+                    return logDate >= weekStartDate && logDate <= currentDate;
+                }).reduce((sum, log) => sum + log.calories, 0);
+                let goalCompleted = false;
+                let goalsCompleted = parseInt(localStorage.getItem('fitfrogGoalsCompleted') || '0');
+                if (userGoals && userGoals.calorieGoal && calorieValue >= userGoals.calorieGoal) {
+                    goalCompleted = true;
+                }
+                // --- Goal Progress Widget ---
+                let widget = `<div style='background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px #0001;padding:1.2rem 1rem;margin-bottom:1.5rem;'>`;
+                widget += `<div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>🎯 Goal Progress</div>`;
+                if (goalsList.length > 0) {
+                    goalsList.forEach(g => {
+                        const percent = Math.min(100, Math.round(100 * (g.caloriesLogged || 0) / g.calorieGoal));
+                        widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>${g.name || 'Goal'}: <span style='color:#219150;'>${g.caloriesLogged || 0} / ${g.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
+                    });
+                } else if (userGoals && userGoals.calorieGoal) {
+                    const percent = Math.min(100, Math.round(100 * (userGoals.caloriesLogged || 0) / userGoals.calorieGoal));
+                    widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>Main Goal: <span style='color:#219150;'>${userGoals.caloriesLogged || 0} / ${userGoals.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
+                } else {
+                    widget += `<div>No goals set.</div>`;
+                }
+                widget += `<div style='margin-top:1.2rem;font-weight:500;'>🏆 Goals Completed: <span style='color:#219150;'>${goalsCompleted}</span></div>`;
+                // Day streak calculation
+                let streak = 0;
+                let streakFreeze = parseInt(localStorage.getItem('fitfrogStreakFreeze') || '0');
+                if (calorieLogs.length > 0) {
+                    // Get unique days with logs
+                    const days = calorieLogs.map(log => (new Date(log.date)).toDateString());
+                    const uniqueDays = Array.from(new Set(days)).sort((a, b) => new Date(b) - new Date(a));
+                    // Count consecutive days from today backwards
+                    let d = new Date();
+                    for (let i = 0; i < uniqueDays.length; i++) {
+                        if (new Date(uniqueDays[i]).toDateString() === d.toDateString()) {
+                            streak++;
+                            d.setDate(d.getDate() - 1);
+                        } else if (streakFreeze > 0) {
+                            streakFreeze--;
+                            d.setDate(d.getDate() - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🔥 Day Streak: <span style='color:#e67e22;'>${streak}</span></div>`;
+                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🪷 Lily Pads: <span style='color:#219150;'>${lilyPads}</span></div>`;
+                widget += `</div>`;
+                calorieStat = widget;
+                // --- End Goal Progress Widget ---
+                let calorieIntake = localStorage.getItem('fitfrogTotalCaloriesIntake') || 0;
+                let calorieBurnt = 0;
+                calorieBurnt = calorieLogs.filter(log => {
+                    const logDate = new Date(log.date);
+                    return logDate >= weekStartDate && logDate <= currentDate;
+                }).reduce((sum, log) => sum + log.calories, 0);
+                let deficit = calorieIntake - calorieBurnt;
+                let intakeWidget = `<div style='background:#fffbe6;border-radius:12px;box-shadow:0 2px 8px #ffe58f;padding:1rem 1rem;margin-bottom:1.5rem;'>
+                  <div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>Calorie Summary</div>
+                  <div style='font-size:1.3rem;color:#e67e22;'>Intake: ${calorieIntake} kcal</div>
+                  <div style='font-size:1.3rem;color:#219150;'>Burnt: ${calorieBurnt} kcal</div>
+                  <div style='font-size:1.3rem;color:#e74c3c;'>Deficit: ${deficit > 0 ? deficit : 0} kcal</div>
+                </div>`;
+                if (userData) {
+                    const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
+                    const bmiCategory = bmi < 18.5 ? 'Underweight' : 
+                                      bmi < 25 ? 'Normal weight' : 
+                                      bmi < 30 ? 'Overweight' : 'Obese';
+                    // Weight lost/gained
+                    let initialWeight = userData.initialWeight || userData.weight;
+                    let weightDiff = userData.weight - initialWeight;
+                    let weightChange = '';
+                    if (weightDiff !== 0) {
+                        weightChange = `<div class='data-group'><h3>Weight ${weightDiff < 0 ? 'Lost' : 'Gained'}</h3><p>${Math.abs(weightDiff)} kg</p></div>`;
+                    }
+                    document.getElementById('mainFitnessProfile').innerHTML = intakeWidget + `
+                        <div class="data-group">
+                            <h3>Personal Information</h3>
+                            <p>Age Group: ${userData.age}</p>
+                            <p>Gender: ${userData.gender}</p>
+                            <p>Height: ${userData.height} cm</p>
+                            <p>Weight: <span id='currentWeight'>${userData.weight} kg</span> <button id='updateWeightBtn' style='margin-left:1rem;'>Update</button></p>
+                        </div>
+                        <div class="data-group">
+                            <h3>BMI Analysis</h3>
+                            <p>Your BMI: ${bmi}</p>
+                            <p>Category: ${bmiCategory}</p>
+                        </div>
+                        ${weightChange}
+                        ${calorieStat}
+                    `;
+                    // Add update weight logic
+                    document.getElementById('updateWeightBtn').onclick = function() {
+                        const newWeight = prompt('Enter your new weight (kg):', userData.weight);
+                        if (newWeight && !isNaN(newWeight)) {
+                            let updated = { ...userData, weight: parseFloat(newWeight) };
+                            if (!userData.initialWeight) updated.initialWeight = userData.weight;
+                            localStorage.setItem('fitfrogData', JSON.stringify(updated));
+                            document.getElementById('currentWeight').textContent = `${updated.weight} kg`;
+                            alert('Weight updated!');
+                        }
+                    };
+                }
+            }
+            renderMainFitnessProfile();
+
+            // Update personalized greeting on page load
+            function updatePersonalizedGreeting() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                const greetingElement = document.getElementById('personalizedGreeting');
+                if (userData && userData.name) {
+                    greetingElement.textContent = `Hi ${userData.name}, how will you get fit today?`;
+                } else {
+                    greetingElement.textContent = 'Hi there, how will you get fit today?';
+                }
+            }
+            updatePersonalizedGreeting();
         });
     </script>
 </body>
