@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Calorie Intake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFrog Calorie Intake</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
@@ -101,6 +103,7 @@
   <div id="imagePreview" class="image-preview"></div>
   <div id="result"></div>
   <div id="totalCalories" class="total-calories"></div>
+  <button id="saveCaloriesBtn" class="custom-file-upload" style="margin-top: 20px;">Save Calories</button>
 
   <script>
     let model;
@@ -168,6 +171,8 @@
     function updateTotalCalories() {
       const totalCaloriesDiv = document.getElementById('totalCalories');
       totalCaloriesDiv.textContent = `Total Calories: ${Math.round(totalCalories)} kcal`;
+      // Store in localStorage for dashboard
+      localStorage.setItem('fitfrogTotalCaloriesIntake', Math.round(totalCalories));
     }
 
     function removeImage(imageId) {
@@ -881,6 +886,13 @@
     loadModel();
 
     document.getElementById('homeBtn').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    // Add event listener for save button
+    document.getElementById('saveCaloriesBtn').addEventListener('click', () => {
+      updateTotalCalories();
+      alert('Calories saved successfully!');
       window.location.href = 'index.html';
     });
   </script>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; frame-src 'self' https: accounts.google.com;">
     <title>FitFrog</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -898,18 +899,40 @@ For each meal, include:
                 widget += `</div>`;
                 calorieStat = widget;
                 // --- End Goal Progress Widget ---
-                let calorieIntake = localStorage.getItem('fitfrogTotalCaloriesIntake') || 0;
+                let calorieIntake = parseInt(localStorage.getItem('fitfrogTotalCaloriesIntake') || '0');
                 let calorieBurnt = 0;
                 calorieBurnt = calorieLogs.filter(log => {
                     const logDate = new Date(log.date);
                     return logDate >= weekStartDate && logDate <= currentDate;
                 }).reduce((sum, log) => sum + log.calories, 0);
+                
+                // Calculate deficit and surplus
                 let deficit = calorieIntake - calorieBurnt;
+                let status = '';
+                let statusColor = '';
+                
+                if (deficit > 0) {
+                    status = 'Surplus';
+                    statusColor = '#e74c3c'; // Red for surplus
+                } else if (deficit < 0) {
+                    status = 'Deficit';
+                    statusColor = '#219150'; // Green for deficit
+                    deficit = Math.abs(deficit); // Make positive for display
+                } else {
+                    status = 'Balanced';
+                    statusColor = '#3498db'; // Blue for balanced
+                }
+
                 let intakeWidget = `<div style='background:#fffbe6;border-radius:12px;box-shadow:0 2px 8px #ffe58f;padding:1rem 1rem;margin-bottom:1.5rem;'>
                   <div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>Calorie Summary</div>
                   <div style='font-size:1.3rem;color:#e67e22;'>Intake: ${calorieIntake} kcal</div>
                   <div style='font-size:1.3rem;color:#219150;'>Burnt: ${calorieBurnt} kcal</div>
-                  <div style='font-size:1.3rem;color:#e74c3c;'>Deficit: ${deficit > 0 ? deficit : 0} kcal</div>
+                  <div style='font-size:1.3rem;color:${statusColor};'>${status}: ${deficit} kcal</div>
+                  <div style='margin-top:0.7rem;font-size:0.9rem;color:#666;'>
+                    ${status === 'Surplus' ? 'You\'ve consumed more calories than burnt' : 
+                      status === 'Deficit' ? 'You\'ve burnt more calories than consumed' : 
+                      'Your calories are balanced'}
+                  </div>
                 </div>`;
                 if (userData) {
                     const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
