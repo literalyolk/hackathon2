@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; frame-src 'self' https: accounts.google.com;">
+    <title>FitFrog</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    #shopAccessoriesList {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin: 1.2rem 0;
+    }
+    .shop-accessory {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 0.7rem 1rem;
+        box-shadow: 0 2px 8px #0001;
+    }
+    .shop-accessory.selected {
+        border: 2px solid #219150;
+        background: #eafaf3;
+    }
+    .shop-accessory-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 8px #0001;
+    }
+    .shop-accessory-info {
+        flex: 1;
+    }
+    .shop-accessory-btn {
+        background: #219150;
+        color: #fff;
+        border: none;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .shop-accessory-btn:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+    }
+    </style>
+</head>
+<body>
+    <header style="background:#fff;box-shadow:0 2px 8px #0001;min-height:unset;height:48px;">
+        <nav style="display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:48px;">
+            <div class="logo" style="font-size:1.3rem;font-weight:700;color:#219150;">FitFrog</div>
+            <div class="nav-buttons" style="display:flex;gap:0.7rem;align-items:center;">
+                <button id="homeBtn" class="nav-btn" style="background:none;border:none;font-size:1.6rem;padding:0 0.5rem;line-height:1;">🏠</button>
+                <button id="shopBtn" class="nav-btn" style="background:none;border:none;font-size:1.6rem;padding:0 0.5rem;line-height:1;">🪷</button>
+                <button id="profileBtn" class="nav-btn" style="background:none;border:none;font-size:1.6rem;padding:0 0.5rem;line-height:1;">👤</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div id="personalizedGreeting" style="text-align: center; font-size: 1.5rem; margin-bottom: 1rem;"></div>
+
+        <div id="welcomeContent" class="welcome-content">
+            <h1 id="personalGreeting">Welcome to FitFrog</h1>
+            <p id="fitGreeting"></p>
+        </div>
+
+        <div id="mainFitnessProfile"></div>
+
+        <div id="actionGrid" class="action-grid">
+            <button id="goalsBtn" class="action-btn">
+                <span class="icon">🎯</span>
+                <span class="text">Set Goals</span>
+            </button>
+            <button id="viewGoalsBtn" class="action-btn">
+                <span class="icon">📋</span>
+                <span class="text">View Goals</span>
+            </button>
+            <button id="calorieIntakeBtn" class="action-btn">
+                <span class="icon">🍽️</span>
+                <span class="text">Calorie Intake</span>
+            </button>
+            <button id="calorieBurntBtn" class="action-btn">
+                <span class="icon">🔥</span>
+                <span class="text">Calorie Burnt</span>
+            </button>
+            <button id="leaderboardBtn" class="action-btn">
+                <span class="icon">🏆</span>
+                <span class="text">Leaderboard</span>
+            </button>
+            <button id="mealSuggestionsBtn" class="action-btn">
+                <span class="icon">🍱</span>
+                <span class="text">Meal Suggestions</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Goals Modal -->
+    <div id="goalsModal" class="modal">
+        <div class="modal-content goals-modal-content">
+            <span class="close">&times;</span>
+            <h2>Set Your Fitness Goals</h2>
+            <div class="goals-content">
+                <div class="goals-section">
+                    <div class="data-group">
+                        <h3>Weekly Calorie Goal (kcal)</h3>
+                        <input type="number" id="calorieGoalInput" min="500" max="20000" step="100" value="2000">
+                        <span id="calorieGoalValue">2000 kcal</span>
+                    </div>
+                </div>
+                <div class="goals-section">
+                    <div class="data-group">
+                        <h3>Weekly Workouts</h3>
+                        <input type="range" id="workoutsSlider" min="1" max="7" value="3">
+                        <span id="workoutsValue">3 days</span>
+                    </div>
+                    <button id="saveGoals" class="submit-btn" style="margin-top:2rem;">Save Goals</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Goals Modal -->
+    <div id="viewGoalsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Fitness Goals</h2>
+            <div id="goalsData" class="goals-data">
+                <div class="data-group">
+                    <h3>Weekly Calorie Goal</h3>
+                    <p id="calorieGoalDisplay">Not set</p>
+                </div>
+                <div class="data-group">
+                    <h3>Weekly Workouts</h3>
+                    <p id="weeklyWorkoutsDisplay">Not set</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calorie Intake Modal -->
+    <div id="calorieIntakeModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close">&times;</span>
+            <h2>Instant Food/Meal Detection from Image</h2>
+            <input type="file" id="imageInput" accept="image/*" />
+            <div id="loading" class="loading" style="display:none;margin:20px 0;">Loading model...</div>
+            <div id="error" class="error" style="color:red;margin:10px 0;"></div>
+            <img id="inputImage" style="max-width:300px;margin:20px 0;display:none;" />
+            <p id="result" style="margin:20px 0;font-size:18px;">Upload an image to detect food...</p>
+        </div>
+    </div>
+
+    <!-- Calorie Burnt Modal -->
+    <div id="calorieBurntModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close">&times;</span>
+            <h2>Log Calories Burnt</h2>
+            <form id="burnLogForm">
+                <div class="form-group">
+                    <label for="burnDate">Date:</label>
+                    <input type="date" id="burnDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="burnActivity">Activity:</label>
+                    <select id="burnActivity" required>
+                        <option value="running">Running</option>
+                        <option value="walking">Walking</option>
+                        <option value="cycling">Cycling</option>
+                        <option value="swimming">Swimming</option>
+                        <option value="basketball">Basketball</option>
+                        <option value="football">Football</option>
+                        <option value="volleyball">Volleyball</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="burnDistance">Distance (km):</label>
+                    <input type="number" id="burnDistance" min="0.1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="burnDuration">Duration (minutes):</label>
+                    <input type="number" id="burnDuration" min="1" step="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="burnGoal">Contribute Calories To Goal:</label>
+                    <select id="burnGoal" required></select>
+                </div>
+                <button type="submit" class="submit-btn">Log Activity</button>
+            </form>
+            <div id="calorieBurntSummary" class="calorie-burnt-summary" style="margin-top:1.5rem;"></div>
+            <div id="calorieBurntHistory" class="calorie-burnt-history" style="margin-top:1.5rem;"></div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Profile</h2>
+            <div id="profileData"></div>
+        </div>
+    </div>
+
+    <!-- Goal Completed Video Modal -->
+    <div id="goalVideoModal" class="modal">
+      <div class="modal-content" style="max-width: 600px; text-align: center;">
+        <span class="close" id="closeGoalVideoBtn">&times;</span>
+        <video id="goalCompletedVideo" width="100%" controls>
+          <source src="videos/goal-completed.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" style="display:none;position:fixed;top:2rem;left:50%;transform:translateX(-50%);z-index:9999;background:#fff;border-radius:12px;box-shadow:0 4px 24px #0002;padding:1.2rem 2rem;font-size:1.2rem;font-weight:600;color:#219150;align-items:center;gap:1rem;min-width:220px;text-align:center;">
+        <span id="achievementPopupIcon" style="font-size:2rem;"></span>
+        <span id="achievementPopupText"></span>
+    </div>
+
+    <!-- Meal Suggestions Modal -->
+    <div id="mealSuggestionsModal" class="modal">
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <span class="close">&times;</span>
+            <h2>Personalized Meal Suggestions</h2>
+            <div id="mealSuggestionsContent">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has completed questionnaire
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+            console.log('User data:', userData); // Debug log
+            
+            // Only redirect to questionnaire if no user data exists
+            if (!userData || !userData.name || !userData.age || !userData.gender || !userData.height || !userData.weight) {
+                console.log('Redirecting to questionnaire...'); // Debug log
+                window.location.replace('questionnaire.html');
+                return;
+            }
+
+            // Initialize modals
+            const goalsModal = document.getElementById('goalsModal');
+            const viewGoalsModal = document.getElementById('viewGoalsModal');
+            const calorieIntakeModal = document.getElementById('calorieIntakeModal');
+            const calorieBurntModal = document.getElementById('calorieBurntModal');
+            const profileModal = document.getElementById('profileModal');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            const goalsBtn = document.getElementById('goalsBtn');
+            const viewGoalsBtn = document.getElementById('viewGoalsBtn');
+            const calorieIntakeBtn = document.getElementById('calorieIntakeBtn');
+            const calorieBurntBtn = document.getElementById('calorieBurntBtn');
+            const leaderboardBtn = document.getElementById('leaderboardBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const profileBtn = document.getElementById('profileBtn');
+            const shopBtn = document.getElementById('shopBtn');
+            const mealSuggestionsBtn = document.getElementById('mealSuggestionsBtn');
+            const mealSuggestionsModal = document.getElementById('mealSuggestionsModal');
+            const mealSuggestionsContent = document.getElementById('mealSuggestionsContent');
+
+            // Close buttons
+            document.querySelectorAll('.close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    goalsModal.style.display = 'none';
+                    viewGoalsModal.style.display = 'none';
+                    calorieIntakeModal.style.display = 'none';
+                    calorieBurntModal.style.display = 'none';
+                    profileModal.style.display = 'none';
+                    goalVideoModal && (goalVideoModal.style.display = 'none');
+                    mealSuggestionsModal.style.display = 'none';
+                });
+            });
+
+            // View Goals button
+            viewGoalsBtn.addEventListener('click', () => {
+                const savedGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                if (savedGoals) {
+                    document.getElementById('calorieGoalDisplay').textContent = savedGoals.calorieGoal ? `${savedGoals.calorieGoal} kcal` : 'Not set';
+                    document.getElementById('weeklyWorkoutsDisplay').textContent = `${savedGoals.weeklyWorkouts} days per week`;
+                } else {
+                    document.getElementById('calorieGoalDisplay').textContent = 'Not set';
+                    document.getElementById('weeklyWorkoutsDisplay').textContent = 'Not set';
+                }
+                viewGoalsModal.style.display = 'block';
+            });
+
+            // Goals button
+            goalsBtn.addEventListener('click', () => {
+                const savedGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                if (savedGoals) {
+                    document.getElementById('calorieGoalInput').value = savedGoals.calorieGoal || '';
+                    document.getElementById('workoutsSlider').value = savedGoals.weeklyWorkouts;
+                    document.getElementById('workoutsValue').textContent = `${savedGoals.weeklyWorkouts} days`;
+                }
+                goalsModal.style.display = 'block';
+            });
+
+            // Save goals
+            document.getElementById('saveGoals').addEventListener('click', () => {
+                const goals = {
+                    calorieGoal: parseInt(document.getElementById('calorieGoalInput').value),
+                    weeklyWorkouts: parseInt(document.getElementById('workoutsSlider').value)
+                };
+                localStorage.setItem('fitfrogGoals', JSON.stringify(goals));
+                goalsModal.style.display = 'none';
+                alert('Goals saved successfully!');
+            });
+
+            // Update sliders
+            document.getElementById('workoutsSlider').addEventListener('input', (e) => {
+                document.getElementById('workoutsValue').textContent = `${e.target.value} days`;
+            });
+
+            // Leaderboard button
+            leaderboardBtn.addEventListener('click', () => {
+                window.location.href = 'leaderboard.html';
+            });
+
+            // Home button
+            homeBtn.addEventListener('click', () => {
+                window.location.reload();
+            });
+
+            // Profile button
+            profileBtn.addEventListener('click', () => {
+                window.location.href = 'profile.html';
+            });
+
+            // Calorie Intake button
+            calorieIntakeBtn.addEventListener('click', () => {
+                window.location.href = 'calorieintake.html';
+            });
+
+            // Calorie Burnt button
+            calorieBurntBtn.addEventListener('click', () => {
+                updateCalorieBurntSummary();
+                updateCalorieBurntHistory();
+                populateGoalDropdown();
+                calorieBurntModal.style.display = 'block';
+            });
+
+            function populateGoalDropdown() {
+                const goalSelect = document.getElementById('burnGoal');
+                goalSelect.innerHTML = '';
+                const goals = JSON.parse(localStorage.getItem('fitfrogGoalsList') || '[]');
+                if (goals.length === 0) {
+                    // fallback to single goal
+                    const singleGoal = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                    if (singleGoal && singleGoal.calorieGoal) {
+                        goalSelect.innerHTML = `<option value="main">Main Goal (${singleGoal.calorieGoal} kcal/week)</option>`;
+                    } else {
+                        goalSelect.innerHTML = `<option value="main">Main Goal</option>`;
+                    }
+                } else {
+                    goals.forEach((g, i) => {
+                        goalSelect.innerHTML += `<option value="${g.id}">${g.name || 'Goal ' + (i+1)} (${g.calorieGoal} kcal/week)</option>`;
+                    });
+                }
+            }
+
+            function setupFoodDetection() {
+                if (window._foodDetectionSetup) return;
+                window._foodDetectionSetup = true;
+                let model;
+                let isModelLoaded = false;
+                const loadingDiv = document.getElementById('loading');
+                const errorDiv = document.getElementById('error');
+                const resultDiv = document.getElementById('result');
+                const imgElem = document.getElementById('inputImage');
+                async function loadModel() {
+                    try {
+                        loadingDiv.style.display = 'block';
+                        resultDiv.innerText = 'Loading model...';
+                        await tf.ready();
+                        model = await mobilenet.load({ version: 2, alpha: 1.0 });
+                        isModelLoaded = true;
+                        resultDiv.innerText = 'Model loaded. Upload an image.';
+                        errorDiv.innerText = '';
+                    } catch (error) {
+                        console.error('Error loading model:', error);
+                        errorDiv.innerText = 'Error loading model. Please check your internet connection and refresh the page.';
+                        resultDiv.innerText = 'Model failed to load.';
+                    } finally {
+                        loadingDiv.style.display = 'none';
+                    }
+                }
+                async function predict(imgElement) {
+                    if (!isModelLoaded) {
+                        errorDiv.innerText = 'Model not loaded. Please wait.';
+                        return;
+                    }
+                    try {
+                        resultDiv.innerText = 'Processing image...';
+                        errorDiv.innerText = '';
+                        const predictions = await model.classify(imgElement);
+                        const foodPredictions = predictions
+                            .filter(pred => isFoodItem(pred.className))
+                            .sort((a, b) => b.probability - a.probability);
+                        if (foodPredictions.length > 0) {
+                            const result = foodPredictions
+                                .map(p => `${p.className} (${(p.probability * 100).toFixed(2)}%)`)
+                                .join('<br>');
+                            resultDiv.innerHTML = `Detected Food Items:<br>${result}`;
+                        } else {
+                            resultDiv.innerText = 'No food items detected in the image.';
+                        }
+                    } catch (error) {
+                        console.error('Error during prediction:', error);
+                        errorDiv.innerText = 'Error processing image. Please try again.';
+                        resultDiv.innerText = 'Prediction failed.';
+                    }
+                }
+                function isFoodItem(className) {
+                    const foodKeywords = [
+                        'pizza','sushi','tacos','pasta','biryani','paella','ramen','dumplings','falafel','kimchi','curry','burger','pho','goulash','shawarma','lasagna','pad thai','chow mein','moussaka','bratwurst','pierogi','jambalaya','ceviche','baklava','bibimbap','peking duck','kebab','fajitas','clam chowder','sauerbraten','tandoori chicken','empanadas','gnocchi','hummus','chili con carne','samosa','quiche','ratatouille','beef stroganoff','dim sum','laksa','maki roll','tortilla española','bulgogi','chicken parmesan','eggplant parmesan','gazpacho','lobster bisque','minestrone','nasi goreng','okonomiyaki','pavlova','quesadilla','risotto','schnitzel','tagine','udon','vindaloo','wiener schnitzel','xiaolongbao','yakisoba','zucchini fritters','arepas','bouillabaisse','churros','dosa','eclairs','fondue','gelato','hot dog','idli','jollof rice','kofta','lassi','mochi','naan','omelette','poutine','qatayef','rogan josh','sauerbraten','tteokbokki','ube cake','vichyssoise','waffles','xacuti','yogurt parfait','ziti','acai bowl','baba ganoush','calamari','duck confit','escargot','fish and chips','gado-gado','huevos rancheros','italian wedding soup','jambon','katsu curry','lobster roll','macarons','nicoise salad','oxtail stew','panna cotta','queso fundido','ribollita','spanakopita','tiramisu','udon noodles','vegetable samosa','wontons','xôi','yassa','zabaglione','beef wellington','chicken tikka masala','clam bake','duck a l\'orange','eggs benedict','fish tacos','gnocchi alla sorrentina','huevos motuleños','irish stew','jambalaya','katsu don','larb gai','moussaka','nasi lemak','okonomiyaki','peking duck','quiche lorraine','ratatouille','spanakopita','tandoori lamb chops','udon soup','vindaloo goat curry','wiener schnitzel','xôi gà','yassa poulet','zrazy','arancini','baba ganoush','caldo verde','dolma','enchiladas verdes','fesenjan','galbi','halloumi salad','iskender kebab','jollof rice with plantains','kedgeree','laksa lemak','maultaschen','nicoise salad','oxtail soup','pav bhaji','queso fresco salad','rogan josh lamb','sauerbraten','tlayudas','ube halaya','vichyssoise','welsh rarebit','xacuti chicken','yum som tum','zesty lemon chicken','banh xeo','causa limeña','doro wat','escabeche','feijoada','gado-gado','hainanese chicken rice','italian wedding soup','jägerschnitzel','khao soi','lomo saltado','menudo','nasi goreng','oliebollen','poffertjes','qatayef asafiri','ribollita','sancocho','tostones','uttapam','vegetable biryani','waterzooi','xôi xéo','yaki onigiri','zampone','anticuchos','bistec a lo pobre','cachupa','dulce de leche pancakes','empanadas salteñas','frittata','gimbap','hoppers','injera with doro wat','jambon persillé','larb gai','mie goreng','nasi uduk','okra soup','poffertjes','quesadilla de huitlacoche','rendang','saganaki','tamale','udon stir fry','vareniki with potato','wonton soup','xôi lạp xưởng','yabby boil','zrazy wołowe','cheeseburger','hamburger','hot dog','fried chicken','turkey with mashed potatoes and gravy','spam','saimin','lechon','mofongo','arroz con gandules','funji','chivito','osh','laplap','fettuccine alla papalina','pabellón criollo','arepa','pho','saltah','nshima','sadza','colcannon potatoes','irish spiced beef','oatmeal dinner rolls','almond tea','domoda','sauerkraut and sausages','pepián','jollof rice','ackee and saltfish','jerk chicken','mole poblano','mondongo','oblea','bánh mì','bò nhúng dấm','bún bò nam bộ','mì quảng','bò lúc lắc','kalocsai fűszerpaprika-őrlemény','szegedi fűszerpaprika-őrlemény','makói vöröshagyma','húsleves','gulyás'
+                    ];
+                    return foodKeywords.some(keyword => className.toLowerCase().includes(keyword));
+                }
+                document.getElementById('imageInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            imgElem.src = event.target.result;
+                            imgElem.style.display = 'block';
+                            imgElem.onload = function() {
+                                predict(imgElem);
+                            };
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                loadModel();
+            }
+
+            // Calorie Burnt logging and summary
+            function getBurnLogs() {
+                return JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
+            }
+            function saveBurnLog(log) {
+                const logs = getBurnLogs();
+                logs.push(log);
+                localStorage.setItem('fitfrogBurnLogs', JSON.stringify(logs));
+            }
+            function calculateCaloriesBurnt(activity, distance, duration, user) {
+                const weight = user.weight || 70;
+                if (activity === 'running') {
+                    // For running: Calories = Distance (km) × Weight (kg) × 0.8
+                    // This gives approximately 60-80 calories per km for average weight
+                    return Math.round(distance * weight * 0.8);
+                } else if (activity === 'walking') {
+                    // For walking: Calories = Distance (km) × Weight (kg) × 0.5
+                    // This gives approximately 30-40 calories per km for average weight
+                    return Math.round(distance * weight * 0.5);
+                } else if (activity === 'cycling') {
+                    // For cycling: Calories = Distance (km) × Weight (kg) × 0.4
+                    // This gives approximately 25-35 calories per km for average weight
+                    return Math.round(distance * weight * 0.4);
+                } else if (activity === 'swimming') {
+                    // Swimming: Calories = Duration (min) × Weight (kg) × 0.13 (moderate effort)
+                    // About 8 METs
+                    return Math.round(duration * weight * 0.13);
+                } else if (activity === 'basketball') {
+                    // Basketball: Calories = Duration (min) × Weight (kg) × 0.11 (game play)
+                    // About 6.5 METs
+                    return Math.round(duration * weight * 0.11);
+                } else if (activity === 'football') {
+                    // Football (soccer): Calories = Duration (min) × Weight (kg) × 0.13 (game play)
+                    // About 8 METs
+                    return Math.round(duration * weight * 0.13);
+                } else if (activity === 'volleyball') {
+                    // Volleyball: Calories = Duration (min) × Weight (kg) × 0.07 (recreational)
+                    // About 4 METs
+                    return Math.round(duration * weight * 0.07);
+                }
+                return 0;
+            }
+            function updateCalorieBurntSummary() {
+                const logs = getBurnLogs();
+                let daily = 0, weekly = 0, monthly = 0, allTime = 0;
+                const now = new Date();
+                const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                
+                // Set time to start of day for accurate date comparison
+                now.setHours(0, 0, 0, 0);
+                weekAgo.setHours(0, 0, 0, 0);
+                monthAgo.setHours(0, 0, 0, 0);
+                
+                console.log('Calculating calories for period:', {
+                    now: now.toISOString(),
+                    weekAgo: weekAgo.toISOString(),
+                    monthAgo: monthAgo.toISOString(),
+                    totalLogs: logs.length
+                });
+
+                logs.forEach(log => {
+                    const logDate = new Date(log.date);
+                    logDate.setHours(0, 0, 0, 0); // Set time to start of day for accurate comparison
+                    
+                    console.log('Processing log:', {
+                        date: logDate.toISOString(),
+                        calories: log.calories,
+                        activity: log.activity,
+                        distance: log.distance,
+                        isToday: logDate.getTime() === now.getTime(),
+                        isThisWeek: logDate >= weekAgo && logDate <= now,
+                        isThisMonth: logDate >= monthAgo && logDate <= now
+                    });
+
+                    // Add to all-time total
+                    allTime += log.calories;
+                    
+                    // Today's calories
+                    if (logDate.getTime() === now.getTime()) {
+                        daily += log.calories;
+                        console.log('Added to daily total:', log.calories, 'New daily total:', daily);
+                    }
+                    
+                    // Weekly calories (last 7 days)
+                    if (logDate >= weekAgo && logDate <= now) {
+                        weekly += log.calories;
+                        console.log('Added to weekly total:', log.calories, 'New weekly total:', weekly);
+                    }
+                    
+                    // Monthly calories
+                    if (logDate >= monthAgo && logDate <= now) {
+                        monthly += log.calories;
+                        console.log('Added to monthly total:', log.calories, 'New monthly total:', monthly);
+                    }
+                });
+
+                console.log('Final Summary totals:', {
+                    daily,
+                    weekly,
+                    monthly,
+                    allTime,
+                    logsProcessed: logs.length
+                });
+
+                document.getElementById('calorieBurntSummary').innerHTML = `
+                    <h3>Calories Burnt</h3>
+                    <div class="data-group"><strong>Today:</strong> ${daily} kcal</div>
+                    <div class="data-group"><strong>This Week:</strong> ${weekly} kcal</div>
+                    <div class="data-group"><strong>This Month:</strong> ${monthly} kcal</div>
+                    <div class="data-group"><strong>All Time:</strong> ${allTime} kcal</div>
+                `;
+            }
+            function updateCalorieBurntHistory() {
+                const logs = getBurnLogs();
+                if (logs.length === 0) {
+                    document.getElementById('calorieBurntHistory').innerHTML = '<em>No activities logged yet.</em>';
+                    return;
+                }
+                let html = '<h3>Activity History</h3><table style="width:100%;margin-top:0.5rem;"><tr><th>Date</th><th>Activity</th><th>Distance (km)</th><th>Duration (min)</th><th>Calories</th></tr>';
+                logs.slice(-10).reverse().forEach(log => {
+                    html += `<tr><td>${new Date(log.date).toLocaleDateString()}</td><td>${log.activity}</td><td>${log.distance}</td><td>${log.duration}</td><td>${log.calories}</td></tr>`;
+                });
+                html += '</table>';
+                document.getElementById('calorieBurntHistory').innerHTML = html;
+            }
+            document.getElementById('burnLogForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const user = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                const date = new Date(document.getElementById('burnDate').value).toISOString();
+                const activity = document.getElementById('burnActivity').value;
+                const distance = parseFloat(document.getElementById('burnDistance').value);
+                const duration = parseFloat(document.getElementById('burnDuration').value);
+                const calories = calculateCaloriesBurnt(activity, distance, duration, user);
+                const goalId = document.getElementById('burnGoal').value;
+                saveBurnLog({ date, activity, distance, duration, calories });
+                // Save calories to the selected goal
+                let goals = JSON.parse(localStorage.getItem('fitfrogGoalsList') || '[]');
+                if (goals.length > 0) {
+                    const idx = goals.findIndex(g => g.id == goalId);
+                    if (idx !== -1) {
+                        goals[idx].caloriesLogged = (goals[idx].caloriesLogged || 0) + calories;
+                        localStorage.setItem('fitfrogGoalsList', JSON.stringify(goals));
+                    }
+                } else if (goalId === 'main') {
+                    // fallback for single goal
+                    let singleGoal = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                    singleGoal.caloriesLogged = (singleGoal.caloriesLogged || 0) + calories;
+                    localStorage.setItem('fitfrogGoals', JSON.stringify(singleGoal));
+                }
+                updateCalorieBurntSummary();
+                updateCalorieBurntHistory();
+                // Check for new achievements
+                const prevStats = getStatsForAchievements();
+                // Save previous achievement states
+                const prevAchieved = achievementsList.map(a => a.check(prevStats));
+                // Check if the selected goal is completed
+                let goalCompleted = false;
+                if (goals.length > 0) {
+                    const idx = goals.findIndex(g => g.id == goalId);
+                    if (idx !== -1 && goals[idx].caloriesLogged >= goals[idx].calorieGoal) {
+                        goalCompleted = true;
+                    }
+                } else if (goalId === 'main') {
+                    let singleGoal = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                    if (singleGoal && singleGoal.caloriesLogged >= singleGoal.calorieGoal) {
+                        goalCompleted = true;
+                    }
+                }
+                if (goalCompleted) {
+                    let goalsCompleted = parseInt(localStorage.getItem('fitfrogGoalsCompleted') || '0');
+                    localStorage.setItem('fitfrogGoalsCompleted', (goalsCompleted + 1).toString());
+                    showGoalCompletedVideo();
+                }
+                // Check for newly unlocked achievements
+                setTimeout(() => {
+                    const newStats = getStatsForAchievements();
+                    let unlocked = false;
+                    achievementsList.forEach((a, i) => {
+                        if (!prevAchieved[i] && a.check(newStats)) {
+                            console.log('Achievement unlocked:', a.desc);
+                            showAchievementPopup(a.icon, a.desc, a.accessory);
+                            unlocked = true;
+                        }
+                    });
+                    if (!unlocked) {
+                        alert('Activity logged!');
+                    } else {
+                        setTimeout(() => alert('Activity logged!'), 1200);
+                    }
+                }, 100);
+                // Award Lily Pads
+                let pads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
+                pads += Math.floor(calories / 10);
+                localStorage.setItem('fitfrogLilyPads', pads);
+                this.reset();
+            });
+
+            // Goal completed video modal logic
+            function showGoalCompletedVideo() {
+                const modal = document.getElementById('goalVideoModal');
+                const video = document.getElementById('goalCompletedVideo');
+                modal.style.display = 'block';
+                video.currentTime = 0;
+                video.play();
+            }
+            document.getElementById('closeGoalVideoBtn').onclick = function() {
+                document.getElementById('goalVideoModal').style.display = 'none';
+                document.getElementById('goalCompletedVideo').pause();
+            };
+
+            // Personalized greeting
+            if (userData && userData.name) {
+                document.getElementById('fitGreeting').textContent = `Hi ${userData.name}, how will you get fit today?`;
+            } else {
+                document.getElementById('fitGreeting').textContent = '';
+            }
+
+            // Achievement definitions (should match profile.html)
+            const achievementsList = [
+                { key: 'firstGoal', icon: '🎉', desc: 'First Goal Completed', check: stats => stats.goalsCompleted >= 1, accessory: 'Prescription01' },
+                { key: 'fiveGoals', icon: '🏅', desc: '5 Goals Completed', check: stats => stats.goalsCompleted >= 5, accessory: 'Kurt' },
+                { key: 'tenGoals', icon: '🥇', desc: '10 Goals Completed', check: stats => stats.goalsCompleted >= 10, accessory: 'Round' },
+                { key: 'weightChange5', icon: '💪', desc: '5kg Weight Change', check: stats => Math.abs(stats.weightDiff) >= 5, accessory: 'Hat' },
+                { key: 'thirtyDayStreak', icon: '3️⃣0️⃣', desc: '30 Day Streak', check: stats => stats.daysUsingApp >= 30, accessory: 'Sunglasses' },
+                { key: 'hundredWorkouts', icon: '🔥', desc: '100 Workouts', check: stats => stats.workoutsLogged >= 100, accessory: 'Wayfarers' },
+            ];
+
+            function getStatsForAchievements() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                const goalsCompleted = parseInt(localStorage.getItem('fitfrogGoalsCompleted') || '0');
+                const stats = JSON.parse(localStorage.getItem('fitfrogProfileStats') || '{}');
+                const daysUsingApp = stats.daysUsingApp || 1;
+                const workoutsLogged = stats.workoutsLogged || 0;
+                let initialWeight = userData.initialWeight || userData.weight || 0;
+                let weightDiff = (userData.weight || 0) - initialWeight;
+                return {
+                    ...userData,
+                    goalsCompleted,
+                    daysUsingApp,
+                    workoutsLogged,
+                    weightDiff
+                };
+            }
+
+            function showAchievementPopup(icon, text, accessory) {
+                const popup = document.getElementById('achievementPopup');
+                document.getElementById('achievementPopupIcon').textContent = icon;
+                document.getElementById('achievementPopupText').textContent = text;
+                popup.style.display = 'flex';
+                setTimeout(() => { popup.style.display = 'none'; }, 3500);
+                if (accessory) {
+                    addToCustomization(accessory);
+                }
+            }
+
+            const shopAccessories = [
+                { key: 'Wayfarers', label: 'Wayfarers', price: 120, type: 'accessoriesType' },
+                { key: 'Blank', label: 'Blank', price: 50, type: 'accessoriesType' },
+                { key: 'ShortHairShortFlat', label: 'Short Hair', price: 80, type: 'topType' },
+                { key: 'LongHairBigHair', label: 'Long Hair', price: 100, type: 'topType' },
+                { key: 'WinterHat1', label: 'Winter Hat', price: 150, type: 'topType' },
+                { key: 'WinterHat2', label: 'Winter Hat 2', price: 150, type: 'topType' },
+                { key: 'WinterHat3', label: 'Winter Hat 3', price: 150, type: 'topType' },
+                { key: 'WinterHat4', label: 'Winter Hat 4', price: 150, type: 'topType' },
+                { key: 'LongHairCurly', label: 'Curly Hair', price: 100, type: 'topType' },
+                { key: 'LongHairStraight', label: 'Straight Hair', price: 100, type: 'topType' },
+                { key: 'LongHairFrida', label: 'Frida Hair', price: 100, type: 'topType' },
+                { key: 'LongHairShavedSides', label: 'Shaved Sides', price: 100, type: 'topType' },
+                { key: 'LongHairMiaWallace', label: 'Mia Wallace Hair', price: 100, type: 'topType' },
+                { key: 'LongHairDreads', label: 'Dreads', price: 100, type: 'topType' },
+                { key: 'ShortHairDreads01', label: 'Short Dreads', price: 80, type: 'topType' },
+                { key: 'ShortHairDreads02', label: 'Short Dreads 2', price: 80, type: 'topType' },
+                { key: 'ShortHairFrizzle', label: 'Frizzle Hair', price: 80, type: 'topType' },
+                { key: 'ShortHairShaggyMullet', label: 'Shaggy Mullet', price: 80, type: 'topType' },
+                { key: 'ShortHairShortCurly', label: 'Short Curly Hair', price: 80, type: 'topType' },
+                { key: 'ShortHairShortWaved', label: 'Short Waved Hair', price: 80, type: 'topType' }
+            ];
+            // Remove party hat, flower crown, and star glasses from customization
+            const customizationAccessories = shopAccessories.filter(acc => acc.key !== 'PartyHat' && acc.key !== 'FlowerCrown' && acc.key !== 'StarGlasses');
+            // Add the 20 accessory items to the customization screen once purchased
+            function addToCustomization(key) {
+                // Add accessory to unlockedAccessories in localStorage
+                let unlocked = JSON.parse(localStorage.getItem('fitfrogUnlockedAccessories') || '[]');
+                if (!unlocked.includes(key)) {
+                    unlocked.push(key);
+                    localStorage.setItem('fitfrogUnlockedAccessories', JSON.stringify(unlocked));
+                }
+            }
+
+            // Shop button
+            shopBtn.addEventListener('click', () => {
+                window.location.href = 'shop.html';
+            });
+            // Award Lily Pads for calories burnt
+            function awardLilyPads(calories) {
+                const lilyPads = Math.floor(calories / 10);
+                let currentPads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
+                currentPads += lilyPads;
+                localStorage.setItem('fitfrogLilyPads', currentPads);
+                return lilyPads;
+            }
+
+            // When buying an accessory in the shop, add to fitfrogBoughtAccessories
+            function buyAccessory(key) {
+                let bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+                if (!bought.includes(key)) {
+                    bought.push(key);
+                    localStorage.setItem('fitfrogBoughtAccessories', JSON.stringify(bought));
+                }
+                // Optionally, also add to unlockedAccessories for compatibility
+                addToCustomization(key);
+            }
+
+            // In the profile/customization screen, render a dropdown for bought accessories
+            function renderBoughtAccessoriesDropdown() {
+                const bought = JSON.parse(localStorage.getItem('fitfrogBoughtAccessories') || '[]');
+                const dropdown = document.createElement('select');
+                dropdown.id = 'boughtAccessoriesDropdown';
+                shopAccessories.forEach(acc => {
+                    if (bought.includes(acc.key)) {
+                        const option = document.createElement('option');
+                        option.value = acc.key;
+                        option.textContent = acc.label;
+                        dropdown.appendChild(option);
+                    }
+                });
+                dropdown.addEventListener('change', function() {
+                    // Update avatarConfig with selected accessory
+                    const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                    const avatarConfig = userData.avatarConfig || {};
+                    avatarConfig[shopAccessories.find(acc => acc.key === this.value).type] = this.value;
+                    userData.avatarConfig = avatarConfig;
+                    localStorage.setItem('fitfrogData', JSON.stringify(userData));
+                    // Refresh avatar preview
+                    const avatarPreview = document.getElementById('avatarPreview');
+                    if (avatarPreview) {
+                        avatarPreview.src = `https://avataaars.io/?topType=${avatarConfig.topType}&accessoriesType=${avatarConfig.accessoriesType}&hairColor=${avatarConfig.hairColor}&facialHairType=${avatarConfig.facialHairType}&clotheType=${avatarConfig.clotheType}&clotheColor=${avatarConfig.clotheColor}&eyeType=${avatarConfig.eyeType}&eyebrowType=${avatarConfig.eyebrowType}&mouthType=${avatarConfig.mouthType}&skinColor=${avatarConfig.skinColor}`;
+                    }
+                });
+                // Insert dropdown into profile/customization screen
+                const profileData = document.getElementById('profileData');
+                if (profileData) {
+                    const label = document.createElement('label');
+                    label.textContent = 'Choose Bought Accessory:';
+                    label.htmlFor = 'boughtAccessoriesDropdown';
+                    profileData.appendChild(label);
+                    profileData.appendChild(dropdown);
+                }
+            }
+
+            // Meal Suggestions button
+            mealSuggestionsBtn.addEventListener('click', () => {
+                mealSuggestionsModal.style.display = 'block';
+                mealSuggestionsContent.innerHTML = 'Loading...';
+                // Fetch personalized meal suggestions
+                const userData = JSON.parse(localStorage.getItem('fitfrogData')) || {};
+                getPersonalizedMeals(userData).then(text => {
+                    mealSuggestionsContent.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-word;">${text}</pre>`;
+                });
+            });
+
+            // Update getPersonalizedMeals to return the raw Gemini text
+            async function getPersonalizedMeals(user) {
+                const apiKey = 'AIzaSyBrHmHfkwCYZm3MWbFps8dW1k_wSX4ih-c';
+                const prompt = `Suggest 2 healthy meals for a ${user.age || '25'}-year-old ${user.gender || 'person'} who weighs ${user.weight || '70'}kg and wants to ${user.goal || 'lose weight'}.
+For each meal, include:
+- Name
+- Short description
+- Ingredients (list)
+- Step-by-step instructions (list)
+- Nutrition info (calories, protein, carbs, fat)
+`;
+                const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=' + apiKey, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || JSON.stringify(data);
+            }
+
+            function updateTotalCalories() {
+                const totalCaloriesDiv = document.getElementById('totalCalories');
+                totalCaloriesDiv.textContent = `Total Calories: ${Math.round(totalCalories)} kcal`;
+                // Store in localStorage for dashboard
+                localStorage.setItem('fitfrogTotalCaloriesIntake', Math.round(totalCalories));
+            }
+
+            function renderMainFitnessProfile() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                const userGoals = JSON.parse(localStorage.getItem('fitfrogGoals'));
+                const goalsList = JSON.parse(localStorage.getItem('fitfrogGoalsList') || '[]');
+                let calorieStat = '';
+                let calorieValue = 0;
+                // Lily Pad balance
+                let lilyPads = parseInt(localStorage.getItem('fitfrogLilyPads') || '0');
+                calorieStat += `<div class='data-group'><h3>Lily Pads</h3><p>${lilyPads} 🪷</p></div>`;
+                // Show calories burnt (weekly)
+                const calorieLogs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
+                const currentDate = new Date();
+                const weekStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 6);
+                calorieValue = calorieLogs.filter(log => {
+                    const logDate = new Date(log.date);
+                    return logDate >= weekStartDate && logDate <= currentDate;
+                }).reduce((sum, log) => sum + log.calories, 0);
+                let goalCompleted = false;
+                let goalsCompleted = parseInt(localStorage.getItem('fitfrogGoalsCompleted') || '0');
+                if (userGoals && userGoals.calorieGoal && calorieValue >= userGoals.calorieGoal) {
+                    goalCompleted = true;
+                }
+                // --- Goal Progress Widget ---
+                let widget = `<div style='background:#f8f9fa;border-radius:12px;box-shadow:0 2px 8px #0001;padding:1.2rem 1rem;margin-bottom:1.5rem;'>`;
+                widget += `<div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>🎯 Goal Progress</div>`;
+                if (goalsList.length > 0) {
+                    goalsList.forEach(g => {
+                        const percent = Math.min(100, Math.round(100 * (g.caloriesLogged || 0) / g.calorieGoal));
+                        widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>${g.name || 'Goal'}: <span style='color:#219150;'>${g.caloriesLogged || 0} / ${g.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
+                    });
+                } else if (userGoals && userGoals.calorieGoal) {
+                    const percent = Math.min(100, Math.round(100 * (userGoals.caloriesLogged || 0) / userGoals.calorieGoal));
+                    widget += `<div style='margin-bottom:0.7rem;'><div style='font-weight:500;'>Main Goal: <span style='color:#219150;'>${userGoals.caloriesLogged || 0} / ${userGoals.calorieGoal} kcal</span></div><div style='background:#e0e0e0;border-radius:8px;height:16px;width:100%;overflow:hidden;'><div style='background:#219150;height:100%;width:${percent}%;border-radius:8px;transition:width 0.3s;'></div></div></div>`;
+                } else {
+                    widget += `<div>No goals set.</div>`;
+                }
+                widget += `<div style='margin-top:1.2rem;font-weight:500;'>🏆 Goals Completed: <span style='color:#219150;'>${goalsCompleted}</span></div>`;
+                // Day streak calculation
+                let streak = 0;
+                let streakFreeze = parseInt(localStorage.getItem('fitfrogStreakFreeze') || '0');
+                if (calorieLogs.length > 0) {
+                    // Get unique days with logs
+                    const days = calorieLogs.map(log => (new Date(log.date)).toDateString());
+                    const uniqueDays = Array.from(new Set(days)).sort((a, b) => new Date(b) - new Date(a));
+                    // Count consecutive days from today backwards
+                    let d = new Date();
+                    for (let i = 0; i < uniqueDays.length; i++) {
+                        if (new Date(uniqueDays[i]).toDateString() === d.toDateString()) {
+                            streak++;
+                            d.setDate(d.getDate() - 1);
+                        } else if (streakFreeze > 0) {
+                            streakFreeze--;
+                            d.setDate(d.getDate() - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🔥 Day Streak: <span style='color:#e67e22;'>${streak}</span></div>`;
+                widget += `<div style='margin-top:0.7rem;font-weight:500;'>🪷 Lily Pads: <span style='color:#219150;'>${lilyPads}</span></div>`;
+                widget += `</div>`;
+                calorieStat = widget;
+                // --- End Goal Progress Widget ---
+                let calorieIntake = localStorage.getItem('fitfrogTotalCaloriesIntake') || 0;
+                let calorieBurnt = 0;
+                calorieBurnt = calorieLogs.filter(log => {
+                    const logDate = new Date(log.date);
+                    return logDate >= weekStartDate && logDate <= currentDate;
+                }).reduce((sum, log) => sum + log.calories, 0);
+                let deficit = calorieIntake - calorieBurnt;
+                let intakeWidget = `<div style='background:#fffbe6;border-radius:12px;box-shadow:0 2px 8px #ffe58f;padding:1rem 1rem;margin-bottom:1.5rem;'>
+                  <div style='font-weight:600;font-size:1.1rem;margin-bottom:0.7rem;'>Calorie Summary</div>
+                  <div style='font-size:1.3rem;color:#e67e22;'>Intake: ${calorieIntake} kcal</div>
+                  <div style='font-size:1.3rem;color:#219150;'>Burnt: ${calorieBurnt} kcal</div>
+                  <div style='font-size:1.3rem;color:#e74c3c;'>Deficit: ${deficit > 0 ? deficit : 0} kcal</div>
+                </div>`;
+                if (userData) {
+                    const bmi = (userData.weight / Math.pow(userData.height / 100, 2)).toFixed(1);
+                    const bmiCategory = bmi < 18.5 ? 'Underweight' : 
+                                      bmi < 25 ? 'Normal weight' : 
+                                      bmi < 30 ? 'Overweight' : 'Obese';
+                    // Weight lost/gained
+                    let initialWeight = userData.initialWeight || userData.weight;
+                    let weightDiff = userData.weight - initialWeight;
+                    let weightChange = '';
+                    if (weightDiff !== 0) {
+                        weightChange = `<div class='data-group'><h3>Weight ${weightDiff < 0 ? 'Lost' : 'Gained'}</h3><p>${Math.abs(weightDiff)} kg</p></div>`;
+                    }
+                    document.getElementById('mainFitnessProfile').innerHTML = intakeWidget + `
+                        <div class="data-group">
+                            <h3>Personal Information</h3>
+                            <p>Age Group: ${userData.age}</p>
+                            <p>Gender: ${userData.gender}</p>
+                            <p>Height: ${userData.height} cm</p>
+                            <p>Weight: <span id='currentWeight'>${userData.weight} kg</span> <button id='updateWeightBtn' style='margin-left:1rem;'>Update</button></p>
+                        </div>
+                        <div class="data-group">
+                            <h3>BMI Analysis</h3>
+                            <p>Your BMI: ${bmi}</p>
+                            <p>Category: ${bmiCategory}</p>
+                        </div>
+                        ${weightChange}
+                        ${calorieStat}
+                    `;
+                    // Add update weight logic
+                    document.getElementById('updateWeightBtn').onclick = function() {
+                        const newWeight = prompt('Enter your new weight (kg):', userData.weight);
+                        if (newWeight && !isNaN(newWeight)) {
+                            let updated = { ...userData, weight: parseFloat(newWeight) };
+                            if (!userData.initialWeight) updated.initialWeight = userData.weight;
+                            localStorage.setItem('fitfrogData', JSON.stringify(updated));
+                            document.getElementById('currentWeight').textContent = `${updated.weight} kg`;
+                            alert('Weight updated!');
+                        }
+                    };
+                }
+            }
+            renderMainFitnessProfile();
+
+            // Update personalized greeting on page load
+            function updatePersonalizedGreeting() {
+                const userData = JSON.parse(localStorage.getItem('fitfrogData'));
+                const greetingElement = document.getElementById('personalizedGreeting');
+                if (userData && userData.name) {
+                    greetingElement.textContent = `Hi ${userData.name}, how will you get fit today?`;
+                } else {
+                    greetingElement.textContent = 'Hi there, how will you get fit today?';
+                }
+            }
+            updatePersonalizedGreeting();
+        });
+    </script>
+</body>
+</html> 

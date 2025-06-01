@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitFrog Leaderboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .leaderboard-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 2.5rem 2rem;
+        }
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .leaderboard-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+        .leaderboard-section {
+            margin-bottom: 3rem;
+        }
+        .rank-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .rank-icon {
+            font-size: 2rem;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.7rem;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 0.7rem 1rem;
+            text-align: left;
+        }
+        .leaderboard-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+        }
+        .leaderboard-row {
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.06);
+            transition: background 0.2s;
+        }
+        .leaderboard-row.user {
+            background: linear-gradient(90deg, #e0f7fa 0%, #e0ffe0 100%);
+            font-weight: 700;
+            border: 2px solid #2ecc71;
+        }
+        .rank-badge {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.2rem 0.8rem;
+            border-radius: 8px;
+            background: #eaf6ff;
+            color: #3498db;
+            margin-right: 0.5rem;
+        }
+        .demoted {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        .promoted {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+        @media (max-width: 700px) {
+            .leaderboard-container {
+                padding: 1rem 0.2rem;
+            }
+            .leaderboard-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="leaderboard-container">
+        <div class="leaderboard-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h1 style="margin: 0;">🏆 FitFrog Leaderboard</h1>
+                <button onclick="window.location.href='index.html'" class="nav-btn" style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;background:transparent;border:none;cursor:pointer;padding:0.5rem 1rem;"><span class="icon">🏠</span> <span class="text">Home</span></button>
+            </div>
+            <p>Climb the ranks by burning or gaining more calories each week!</p>
+        </div>
+        <div id="burnFatSection" class="leaderboard-section"></div>
+    </div>
+    <script>
+        // --- Rank Definitions ---
+        const ranks = [
+            { name: 'Egg', icon: '🥚', min: 0 },
+            { name: 'Tadpole', icon: '🐣', min: 1000 },
+            { name: 'Frog', icon: '🐸', min: 3000 },
+            { name: 'FitFrog', icon: '🏆', min: 6000 }
+        ];
+        // --- Bot Names ---
+        const botNames = [
+            'Alex', 'Sam', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Jamie', 'Drew', 'Skyler',
+            'Avery', 'Peyton', 'Quinn', 'Reese', 'Rowan', 'Sawyer', 'Shawn', 'Terry', 'Robin'
+        ];
+        // --- Helper Functions ---
+        function getUserProfile() {
+            return JSON.parse(localStorage.getItem('fitfrogData') || '{}');
+        }
+        function getUserGoals() {
+            return JSON.parse(localStorage.getItem('fitfrogGoals') || '{}');
+        }
+        function getLastDemotionCheck() {
+            return JSON.parse(localStorage.getItem('fitfrogLastDemotionCheck') || 'null');
+        }
+        function updateLastDemotionCheck() {
+            localStorage.setItem('fitfrogLastDemotionCheck', JSON.stringify(new Date().toISOString()));
+        }
+        function checkDailyDemotion() {
+            const lastCheck = getLastDemotionCheck();
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            
+            // If no last check or last check was before today
+            if (!lastCheck || new Date(lastCheck).setHours(0, 0, 0, 0) < now.getTime()) {
+                const userWeekly = getWeeklyCalories('weight');
+                const userRank = getUserRank(userWeekly);
+                const userGoals = getUserGoals();
+                
+                // Only check demotion if user's goal is weight management
+                if (userGoals && userGoals.type === 'weight') {
+                    // Get current rank
+                    const currentRank = localStorage.getItem('fitfrogCurrentRank') || 'Egg';
+                    
+                    // Check if user should be demoted
+                    if (userWeekly < 1000 && currentRank !== 'Egg') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Egg');
+                        alert('You have been demoted to Egg rank due to insufficient weekly activity.');
+                    } else if (userWeekly < 3000 && currentRank === 'Frog') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Tadpole');
+                        alert('You have been demoted to Tadpole rank due to insufficient weekly activity.');
+                    } else if (userWeekly < 6000 && currentRank === 'FitFrog') {
+                        localStorage.setItem('fitfrogCurrentRank', 'Frog');
+                        alert('You have been demoted to Frog rank due to insufficient weekly activity.');
+                    }
+                }
+                
+                updateLastDemotionCheck();
+            }
+        }
+        function getWeeklyCalories(type) {
+            if (type === 'weight') {
+                // Calories burnt (outtake)
+                const logs = JSON.parse(localStorage.getItem('fitfrogBurnLogs') || '[]');
+                const user = getUserProfile();
+                const weight = user.weight || 70;
+                const now = new Date();
+                const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                
+                // Set time to start of day for accurate date comparison
+                now.setHours(0, 0, 0, 0);
+                weekAgo.setHours(0, 0, 0, 0);
+                
+                console.log('[Leaderboard] Calculating weekly calories:', {
+                    now: now.toISOString(),
+                    weekAgo: weekAgo.toISOString(),
+                    totalLogs: logs.length,
+                    userWeight: weight
+                });
+
+                let total = 0;
+                logs.forEach(log => {
+                    const logDate = new Date(log.date);
+                    logDate.setHours(0, 0, 0, 0); // Set time to start of day for accurate comparison
+                    
+                    if (logDate >= weekAgo && logDate <= now) {
+                        total += log.calories;
+                        console.log(`[Leaderboard] Added to weekly total:`, {
+                            date: logDate.toISOString(),
+                            calories: log.calories,
+                            activity: log.activity,
+                            distance: log.distance,
+                            runningTotal: total,
+                            isInRange: true
+                        });
+                    } else {
+                        console.log(`[Leaderboard] Skipped log:`, {
+                            date: logDate.toISOString(),
+                            calories: log.calories,
+                            activity: log.activity,
+                            distance: log.distance,
+                            isInRange: false
+                        });
+                    }
+                });
+                
+                console.log('[Leaderboard] Final weekly total:', {
+                    total,
+                    logsProcessed: logs.length,
+                    logsInRange: logs.filter(log => {
+                        const logDate = new Date(log.date);
+                        logDate.setHours(0, 0, 0, 0);
+                        return logDate >= weekAgo && logDate <= now;
+                    }).length
+                });
+                return total;
+            } else {
+                // Calories gained (intake, placeholder)
+                return parseInt(localStorage.getItem('fitfrogCaloriesConsumedWeek') || '0');
+            }
+        }
+        function getUserRank(calories) {
+            let rank = ranks[0];
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (calories >= ranks[i].min) {
+                    rank = ranks[i];
+                    break;
+                }
+            }
+            // Update stored rank
+            localStorage.setItem('fitfrogCurrentRank', rank.name);
+            return rank;
+        }
+        function generateBots(type, userWeekly, userName) {
+            // Bots get better as rank increases
+            let bots = [];
+            let base = type === 'weight' ? 1200 : 1800;
+            let spread = type === 'weight' ? 4000 : 3500;
+            for (let i = 0; i < 19; i++) {
+                let botCalories = Math.round(base + (spread * (i / 18)) + (Math.random() * 200 - 100));
+                bots.push({
+                    name: botNames[i % botNames.length],
+                    calories: botCalories,
+                    isUser: false
+                });
+            }
+            // Insert user
+            bots.push({ name: userName, calories: userWeekly, isUser: true });
+            // Sort descending for burn, ascending for gain
+            bots.sort((a, b) => type === 'weight' ? b.calories - a.calories : a.calories - b.calories);
+            return bots;
+        }
+        function renderLeaderboard(sectionId, type, userName) {
+            const userWeekly = getWeeklyCalories(type);
+            const bots = generateBots(type, userWeekly, userName);
+            // Determine user rank
+            const userIndex = bots.findIndex(b => b.isUser);
+            let userRank = getUserRank(userWeekly);
+            // Demotion logic
+            let demoted = false;
+            if (userIndex >= 15) demoted = true;
+            // Build table
+            let html = '';
+            html += `<div class='rank-title'><span class='rank-icon'>${userRank.icon}</span> ${userRank.name} Rank</div>`;
+            html += `<table class='leaderboard-table'><thead><tr><th>Rank</th><th>Name</th><th>Calories ${type === 'weight' ? 'Burnt' : 'Gained'} (This Week)</th></tr></thead><tbody>`;
+            bots.forEach((bot, i) => {
+                const isUser = bot.isUser;
+                html += `<tr class='leaderboard-row${isUser ? ' user' : ''}'>`;
+                html += `<td>${i + 1}</td>`;
+                html += `<td>${isUser ? '<span class="rank-badge">You</span>' : bot.name}</td>`;
+                html += `<td>${bot.calories} kcal</td>`;
+                html += `</tr>`;
+            });
+            html += `</tbody></table>`;
+            if (demoted) {
+                html += `<div class='demoted'>You are in the bottom 5. Improve your performance to avoid demotion!</div>`;
+            } else if (userIndex < 5) {
+                html += `<div class='promoted'>Great job! You're in the top 5 and on your way to the next rank!</div>`;
+            }
+            html += `<div style='margin-top:1.5rem;'><strong>Rank Requirements:</strong> Egg: 0+, Tadpole: 1000+, Frog: 3000+, FitFrog: 6000+ kcal/week</div>`;
+            document.getElementById(sectionId).innerHTML = html;
+        }
+        // --- Main Render ---
+        const user = getUserProfile();
+        const goals = getUserGoals();
+        const userName = user.name || 'You';
+        
+        // Check for daily demotion
+        checkDailyDemotion();
+        
+        // Render only the calorie burnt leaderboard
+        renderLeaderboard('burnFatSection', 'weight', userName);
+    </script>
+</body>
+</html> 

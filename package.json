@@ -1,0 +1,15 @@
+{
+  "name": "fitfrog",
+  "version": "1.0.0",
+  "description": "A fitness tracking and motivation platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "express": "^5.1.0",
+    "openai": "^5.0.1",
+    "react-avataaars": "^0.2.3"
+  }
+}
